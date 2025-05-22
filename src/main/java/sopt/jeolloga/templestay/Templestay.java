@@ -2,8 +2,12 @@ package sopt.jeolloga.templestay;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import sopt.jeolloga.filter.Filter;
+import sopt.jeolloga.image.Image;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,11 +47,17 @@ public class Templestay {
     @Column
     private Long view;
 
+    @OneToMany(mappedBy = "templestay", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Filter filter;
+
+    @OneToMany(mappedBy = "templestay", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Image> images = new ArrayList<>();
+
     protected Templestay() {
 
     }
 
-    public Templestay(String url, String templestayName, String organizedName, String phone, String introduction, String address, String templeName, String schedule, LocalDateTime updatedAt, Long view) {
+    public Templestay(String url, String templestayName, String organizedName, String phone, String introduction, String address, String templeName, String schedule, LocalDateTime updatedAt, Long view, Filter filter, List<Image> images) {
         this.url = url;
         this.templestayName = templestayName;
         this.organizedName = organizedName;
@@ -58,5 +68,7 @@ public class Templestay {
         this.schedule = schedule;
         this.updatedAt = updatedAt;
         this.view = view;
+        this.filter = filter;
+        this.images = images;
     }
 }
