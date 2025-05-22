@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.templestay.core;
+package sopt.jeolloga.domain.templestay.core.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
