@@ -11,51 +11,35 @@ import sopt.jeolloga.domain.templestay.Templestay;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendListRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendRes;
 import sopt.jeolloga.domain.templestay.core.repository.TemplestayRepository;
+import sopt.jeolloga.domain.templestay.mapper.TemplestayRecommendMapper;
+import sopt.jeolloga.exception.BusinessErrorCode;
+import sopt.jeolloga.exception.BusinessException;
+import sopt.jeolloga.exception.ErrorCode;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TemplestayService {
+    // 이번주 인기 템플스테이 아이디
+    private static final List<Long> RECOMMEND_TEMPLATESTAY_IDS = List.of(2002L, 2003L, 2004L);
+
     private final TemplestayRepository templestayRepository;
     private final FilterRepository filterRepository;
     private final ImageRepository imageRepository;
+    private final TemplestayRecommendMapper templestayRecommendMapper;
 
-    public TemplestayService(TemplestayRepository templestayRepository, FilterRepository filterRepository, ImageRepository imageRepository) {
+    public TemplestayService(TemplestayRepository templestayRepository, FilterRepository filterRepository, ImageRepository imageRepository, TemplestayRecommendMapper templestayRecommendMapper) {
         this.templestayRepository = templestayRepository;
         this.filterRepository = filterRepository;
         this.imageRepository = imageRepository;
+        this.templestayRecommendMapper = templestayRecommendMapper;
     }
 
     @Transactional(readOnly = true)
     public TemplestayRecommendListRes getRecommendTemplestays() {
-        List<Long> templestayIds = List.of(2002L, 2003L, 2004L);
-
-        List<TemplestayRecommendRes> results = templestayIds.stream()
-                .map(id -> {
-                    // 기존 getRecommendTemplestay 로직
-                    Templestay templestay = templestayRepository.findById(id)
-                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 템플스테이 id입니다: " + id));
-
-                    Filter filter = filterRepository.findFirstByTemplestayId(id)
-                            .orElseThrow(() -> new IllegalArgumentException("필터 정보가 없습니다: " + id));
-
-                    int regionMask = filter.getRegion();
-                    List<String> regionNames = Region.fromMask(regionMask).stream()
-                            .map(Region::getLabel)
-                            .toList();
-                    String region = String.join(", ", regionNames);
-
-                    Optional<Image> optionalImage = imageRepository.findFirstByTemplestayIdOrderByIdAsc(id);
-                    String imgUrl = optionalImage.map(Image::getImgUrl).orElse(null);
-
-                    return new TemplestayRecommendRes(
-                            templestay.getId(),
-                            imgUrl,
-                            region,
-                            templestay.getTempleName()
-                    );
-                })
+        List<TemplestayRecommendRes> results = RECOMMEND_TEMPLATESTAY_IDS.stream()
+                .map(templestayRecommendMapper::toRecommendRes)
                 .toList();
 
         return new TemplestayRecommendListRes(results);
