@@ -48,7 +48,7 @@ public class Templestay {
     private Long view;
 
     @OneToMany(mappedBy = "templestay", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Filter filter;
+    private List<Filter> filter;
 
     @OneToMany(mappedBy = "templestay", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
@@ -57,7 +57,7 @@ public class Templestay {
 
     }
 
-    public Templestay(String url, String templestayName, String organizedName, String phone, String introduction, String address, String templeName, String schedule, LocalDateTime updatedAt, Long view, Filter filter, List<Image> images) {
+    public Templestay(String url, String templestayName, String organizedName, String phone, String introduction, String address, String templeName, String schedule, LocalDateTime updatedAt, Long view, List<Filter> filter, List<Image> images) {
         this.url = url;
         this.templestayName = templestayName;
         this.organizedName = organizedName;
