@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.templestay.core;
+package sopt.jeolloga.domain.templestay.core.repository;
 
 import sopt.jeolloga.domain.templestay.Templestay;
 

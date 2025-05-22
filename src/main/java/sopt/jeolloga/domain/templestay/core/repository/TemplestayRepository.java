@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.templestay.core;
+package sopt.jeolloga.domain.templestay.core.repository;
 
 import jdk.jfr.Registered;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,5 +1,9 @@
 package sopt.jeolloga.common.filter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum Region implements BitMask {
     강원(0),
     경기(1),
@@ -20,8 +24,22 @@ public enum Region implements BitMask {
     세종(16);
 
     private final int bit;
+
     Region(int bit) { this.bit = bit; }
 
-    @Override public int getBit() { return bit; }
-    @Override public String getLabel() { return name(); }
+    @Override
+    public int getBit() {
+        return 1 << bit;
+    }
+
+    @Override
+    public String getLabel() {
+        return name();
+    }
+
+    public static List<Region> fromMask(int mask) {
+        return Arrays.stream(values())
+                .filter(region -> (region.getBit() & mask) != 0)
+                .collect(Collectors.toList());
+    }
 }
