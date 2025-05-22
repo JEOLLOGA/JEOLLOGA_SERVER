@@ -1,0 +1,47 @@
+package sopt.jeolloga.filter;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import sopt.jeolloga.templestay.Templestay;
+
+@Entity
+@Getter
+@Table(name = "filter")
+public class Filter {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "templestay_id", nullable = false)
+    private Templestay templestay;
+
+    @Column
+    private int region;
+
+    @Column
+    private int type;
+
+    @Column
+    private int activity;
+
+    @Column
+    private int ect;
+
+    @Column
+    private int price;
+
+    protected Filter() {
+
+    }
+
+    public Filter(Templestay templestay, int region, int type, int activity, int ect, int price) {
+        this.templestay = templestay;
+        this.region = region;
+        this.type = type;
+        this.activity = activity;
+        this.ect = ect;
+        this.price = price;
+    }
+}
