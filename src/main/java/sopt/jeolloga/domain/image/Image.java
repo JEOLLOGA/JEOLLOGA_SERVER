@@ -1,8 +1,8 @@
-package sopt.jeolloga.image;
+package sopt.jeolloga.domain.image;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import sopt.jeolloga.templestay.Templestay;
+import sopt.jeolloga.domain.templestay.Templestay;
 
 import java.time.LocalDateTime;
 

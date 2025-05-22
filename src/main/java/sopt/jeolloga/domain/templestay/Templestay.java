@@ -1,9 +1,9 @@
-package sopt.jeolloga.templestay;
+package sopt.jeolloga.domain.templestay;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import sopt.jeolloga.filter.Filter;
-import sopt.jeolloga.image.Image;
+import sopt.jeolloga.domain.filter.Filter;
+import sopt.jeolloga.domain.image.Image;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

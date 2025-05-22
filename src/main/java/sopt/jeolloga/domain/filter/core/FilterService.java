@@ -1,4 +1,4 @@
-package sopt.jeolloga.filter.core;
+package sopt.jeolloga.domain.filter.core;
 
 import org.springframework.stereotype.Service;
 

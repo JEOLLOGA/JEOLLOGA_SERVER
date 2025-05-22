@@ -1,4 +1,4 @@
-package sopt.jeolloga.templestay.core;
+package sopt.jeolloga.domain.templestay.core;
 
 import org.springframework.stereotype.Service;
 
