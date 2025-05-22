@@ -1,4 +1,4 @@
-package sopt.jeolloga.dto;
+package sopt.jeolloga.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
