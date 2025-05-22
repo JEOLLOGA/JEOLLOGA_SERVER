@@ -18,10 +18,10 @@ public class Image {
     @JoinColumn(name = "templestay_id", nullable = false)
     private Templestay templestay;
 
-    @Column(name = "img_url", length = 500, nullable = false)
+    @Column
     private String imgUrl;
 
-    @Column(name = "created_at", nullable = false)
+    @Column
     private LocalDateTime createdAt;
 
     protected Image() {
