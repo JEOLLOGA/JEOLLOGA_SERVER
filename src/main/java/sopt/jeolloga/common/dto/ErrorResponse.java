@@ -1,4 +1,4 @@
-package sopt.jeolloga.dto;
+package sopt.jeolloga.common.dto;
 
 public record ErrorResponse(
         int code,

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-import sopt.jeolloga.dto.ErrorResponse;
+import sopt.jeolloga.common.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
