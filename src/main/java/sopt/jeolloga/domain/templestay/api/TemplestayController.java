@@ -1,7 +1,7 @@
-package sopt.jeolloga.templestay.api;
+package sopt.jeolloga.domain.templestay.api;
 
 import org.springframework.web.bind.annotation.RestController;
-import sopt.jeolloga.templestay.core.TemplestayService;
+import sopt.jeolloga.domain.templestay.core.TemplestayService;
 
 @RestController
 public class TemplestayController {

@@ -1,4 +1,4 @@
-package sopt.jeolloga.image.core;
+package sopt.jeolloga.domain.image.core;
 
 import org.springframework.stereotype.Service;
 

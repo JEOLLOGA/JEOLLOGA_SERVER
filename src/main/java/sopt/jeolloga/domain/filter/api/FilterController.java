@@ -1,7 +1,7 @@
-package sopt.jeolloga.filter.api;
+package sopt.jeolloga.domain.filter.api;
 
 import org.springframework.web.bind.annotation.RestController;
-import sopt.jeolloga.filter.core.FilterService;
+import sopt.jeolloga.domain.filter.core.FilterService;
 
 @RestController
 public class FilterController {

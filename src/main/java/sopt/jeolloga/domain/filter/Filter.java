@@ -1,8 +1,8 @@
-package sopt.jeolloga.filter;
+package sopt.jeolloga.domain.filter;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import sopt.jeolloga.templestay.Templestay;
+import sopt.jeolloga.domain.templestay.Templestay;
 
 @Entity
 @Getter
