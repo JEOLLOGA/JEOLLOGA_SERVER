@@ -13,6 +13,13 @@ import sopt.jeolloga.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handlerBusinessException(BusinessException ex) {
+        BusinessErrorCode businessErrorCode = ex.getBusinessErrorCode();
+        return ResponseEntity.status(businessErrorCode.getStatus())
+                .body(new ErrorResponse(businessErrorCode.getCode(), businessErrorCode.getMsg()));
+    }
+
     @ExceptionHandler({
             HttpRequestMethodNotSupportedException.class,
             MethodArgumentTypeMismatchException.class

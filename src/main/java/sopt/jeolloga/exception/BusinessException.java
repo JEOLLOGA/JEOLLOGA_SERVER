@@ -1,4 +1,4 @@
-package sopt.jeolloga.api.exception;
+package sopt.jeolloga.exception;
 
 import lombok.Getter;
 
