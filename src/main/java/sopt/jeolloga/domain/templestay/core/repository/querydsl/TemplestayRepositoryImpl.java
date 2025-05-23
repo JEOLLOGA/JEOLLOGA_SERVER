@@ -1,17 +1,23 @@
-package sopt.jeolloga.domain.templestay.core.repository;
+package sopt.jeolloga.domain.templestay.core.repository.querydsl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import sopt.jeolloga.domain.templestay.QTemplestay;
 import sopt.jeolloga.domain.templestay.Templestay;
 import sopt.jeolloga.domain.filter.QFilter;
+import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
+import sopt.jeolloga.domain.templestay.core.repository.querydsl.TemplestayCustomRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
@@ -70,5 +76,36 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         return (mask != null && mask != 0)
                 ? Expressions.numberTemplate(Integer.class, "{0} & {1}", field, mask).ne(0)
                 : null;
+    }
+
+    @Override
+    public Optional<TemplestayDetailsRes> findDetailsById(Long id) {
+        QTemplestay t = QTemplestay.templestay;
+        QFilter f = QFilter.filter;
+
+        NumberExpression<Integer> minPrice = f.price.min();
+
+        TemplestayDetailsRes result = queryFactory
+                .select(Projections.constructor(
+                        TemplestayDetailsRes.class,
+                        t.id,
+                        t.templestayName,
+                        t.templeName,
+                        t.address,
+                        t.phone,
+                        t.schedule,
+                        minPrice.as("price").intValue(),
+                        t.introduction,
+                        t.url,
+                        t.lat,
+                        t.lon
+                ))
+                .from(t)
+                .leftJoin(t.filter, f)
+                .where(t.id.eq(id))
+                .groupBy(t.id)
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }
