@@ -13,6 +13,8 @@ import sopt.jeolloga.domain.templestay.core.repository.TemplestayRepository;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class TemplestayRecommendMapper {
@@ -21,17 +23,19 @@ public class TemplestayRecommendMapper {
     private final FilterRepository filterRepository;
     private final ImageRepository imageRepository;
 
-    public TemplestayRecommendRes toRecommendRes(Long id) {
+    public Optional<TemplestayRecommendRes> toRecommendRes(Long id) {
         Templestay templestay = templestayRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY));
+
+        if (templestay.getOrganizedName() == null) {
+            return Optional.empty();
+        }
 
         Filter filter = filterRepository.findFirstByTemplestayId(id)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_FILTER));
 
         String region = Region.fromMask(filter.getRegion()).stream()
                 .map(Region::getLabel)
-                .toList()
-                .stream()
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");
 
@@ -39,12 +43,12 @@ public class TemplestayRecommendMapper {
                 .map(Image::getImgUrl)
                 .orElse(null);
 
-        return new TemplestayRecommendRes(
+        return Optional.of(new TemplestayRecommendRes(
                 templestay.getId(),
                 templestay.getOrganizedName(),
                 imgUrl,
                 region,
                 templestay.getTempleName()
-        );
+        ));
     }
 }

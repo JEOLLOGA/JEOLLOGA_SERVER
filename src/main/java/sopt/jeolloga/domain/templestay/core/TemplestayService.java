@@ -40,6 +40,7 @@ public class TemplestayService {
     public TemplestayRecommendListRes getRecommendTemplestays() {
         List<TemplestayRecommendRes> results = RECOMMEND_TEMPLATESTAY_IDS.stream()
                 .map(templestayRecommendMapper::toRecommendRes)
+                .flatMap(Optional::stream)
                 .toList();
 
         return new TemplestayRecommendListRes(results);
