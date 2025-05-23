@@ -41,6 +41,7 @@ public class TemplestayRecommendMapper {
 
         return new TemplestayRecommendRes(
                 templestay.getId(),
+                templestay.getOrganizedName(),
                 imgUrl,
                 region,
                 templestay.getTempleName()
