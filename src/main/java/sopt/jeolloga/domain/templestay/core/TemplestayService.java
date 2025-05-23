@@ -2,19 +2,16 @@ package sopt.jeolloga.domain.templestay.core;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sopt.jeolloga.common.filter.Region;
-import sopt.jeolloga.domain.filter.Filter;
 import sopt.jeolloga.domain.filter.core.FilterRepository;
-import sopt.jeolloga.domain.image.Image;
 import sopt.jeolloga.domain.image.core.ImageRepository;
-import sopt.jeolloga.domain.templestay.Templestay;
+import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendListRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendRes;
 import sopt.jeolloga.domain.templestay.core.repository.TemplestayRepository;
+import sopt.jeolloga.domain.templestay.mapper.TemplestayDetailsMapper;
 import sopt.jeolloga.domain.templestay.mapper.TemplestayRecommendMapper;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
-import sopt.jeolloga.exception.ErrorCode;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,5 +41,12 @@ public class TemplestayService {
                 .toList();
 
         return new TemplestayRecommendListRes(results);
+    }
+
+    @Transactional(readOnly = true)
+    public TemplestayDetailsRes getDetailsTemplestay(Long id) {
+        return templestayRepository.findDetailsById(id)
+                .flatMap(TemplestayDetailsMapper::validateLatLon)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY));
     }
 }
