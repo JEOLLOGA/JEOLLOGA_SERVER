@@ -16,6 +16,7 @@ import sopt.jeolloga.exception.BusinessException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Service
 public class TemplestayService {
@@ -36,8 +37,12 @@ public class TemplestayService {
 
     @Transactional(readOnly = true)
     public TemplestayRecommendListRes getRecommendTemplestays() {
-        List<TemplestayRecommendRes> results = RECOMMEND_TEMPLATESTAY_IDS.stream()
-                .map(templestayRecommendMapper::toRecommendRes)
+        List<TemplestayRecommendRes> results = IntStream.range(0, RECOMMEND_TEMPLATESTAY_IDS.size())
+                .mapToObj(i -> {
+                    Long id = RECOMMEND_TEMPLATESTAY_IDS.get(i);
+                    int rank = i + 1;
+                    return templestayRecommendMapper.toRecommendRes(id, rank);
+                })
                 .flatMap(Optional::stream)
                 .toList();
 
