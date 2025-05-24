@@ -9,7 +9,7 @@ import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendRes;
 import sopt.jeolloga.domain.templestay.core.TemplestayService;
 
 @RestController
-@RequestMapping("/templestay")
+@RequestMapping("/api/templestay")
 public class TemplestayController {
     private final TemplestayService templestayService;
 

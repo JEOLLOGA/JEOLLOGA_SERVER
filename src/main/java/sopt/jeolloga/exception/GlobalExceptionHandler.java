@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException.class
     })
     public ResponseEntity<ErrorResponse> handleBadRequestMethods(Exception ex) {
-        ErrorCode errorCode = ErrorCode.BAD_REQUEST_METHOD;
+        ErrorCode errorCode = ErrorCode.METHOD_NOT_ALLOWED;
         return ResponseEntity.status(errorCode.getStatus())
                 .body(new ErrorResponse(errorCode.getCode(), errorCode.getMsg()));
     }
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ErrorResponse> handleMissingRequestHeader(MissingRequestHeaderException ex) {
-        ErrorCode errorCode = ErrorCode.ID_BAD_REQUEST;
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED_HEADER;
         return ResponseEntity.status(errorCode.getStatus())
                 .body(new ErrorResponse(errorCode.getCode(), errorCode.getMsg()));
     }
