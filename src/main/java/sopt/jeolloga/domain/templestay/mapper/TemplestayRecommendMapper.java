@@ -23,7 +23,7 @@ public class TemplestayRecommendMapper {
     private final FilterRepository filterRepository;
     private final ImageRepository imageRepository;
 
-    public Optional<TemplestayRecommendRes> toRecommendRes(Long id) {
+    public Optional<TemplestayRecommendRes> toRecommendRes(Long id, int rank) {
         Templestay templestay = templestayRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY));
 
@@ -45,6 +45,7 @@ public class TemplestayRecommendMapper {
 
         return Optional.of(new TemplestayRecommendRes(
                 templestay.getId(),
+                rank,
                 templestay.getOrganizedName(),
                 imgUrl,
                 region,
