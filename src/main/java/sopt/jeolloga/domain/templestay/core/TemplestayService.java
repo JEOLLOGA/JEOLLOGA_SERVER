@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.jeolloga.domain.filter.core.FilterRepository;
 import sopt.jeolloga.domain.image.core.ImageRepository;
+import sopt.jeolloga.domain.templestay.Templestay;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendListRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendRes;
@@ -48,5 +49,12 @@ public class TemplestayService {
         return templestayRepository.findDetailsById(id)
                 .flatMap(TemplestayDetailsMapper::validateLatLon)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY));
+    }
+
+    @Transactional
+    public void updateView(Long id) {
+        Templestay templestay = templestayRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY));
+        templestay.updateView();
     }
 }
