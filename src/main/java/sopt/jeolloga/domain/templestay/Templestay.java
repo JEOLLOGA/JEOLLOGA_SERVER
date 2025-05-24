@@ -79,4 +79,8 @@ public class Templestay {
         this.filter = filter;
         this.images = images;
     }
+
+    public void updateView() {
+        this.view += 1;
+    }
 }
