@@ -17,9 +17,6 @@ public class OauthClientApi {
     private final KakaoOauthProperties properties;
 
     public KakaoTokenRes fetchToken(String code) {
-        log.info("인가 코드: {}", code);
-        log.info("client_id: {}", properties.clientId());
-        log.info("redirect_uri: {}", properties.redirectUri());
         return webClient.post()
                 .uri("/oauth/token")
                 .body(BodyInserters.fromFormData("grant_type", "authorization_code")
