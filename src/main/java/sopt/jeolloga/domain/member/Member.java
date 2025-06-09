@@ -12,6 +12,9 @@ public class Member {
     private Long id;
 
     @Column
+    private Long kakaoUserId;
+
+    @Column
     private String nickname;
 
     @Column
@@ -41,4 +44,11 @@ public class Member {
         this.religion = religion;
         this.hasExperience = hasExperience;
     }
+
+    public Member(Long kakaoUserId, String email, String nickname) {
+        this.kakaoUserId = kakaoUserId;
+        this.email = email;
+        this.nickname = nickname;
+    }
+
 }
