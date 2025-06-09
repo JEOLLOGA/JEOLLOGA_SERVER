@@ -1,7 +1,9 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sopt.jeolloga.domain.auth.jwt.JwtTokenGenerator;
+import sopt.jeolloga.domain.auth.dto.LoginResult;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
 

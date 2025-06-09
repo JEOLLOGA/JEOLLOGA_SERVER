@@ -1,7 +1,13 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sopt.jeolloga.domain.auth.dto.LoginCommand;
+import sopt.jeolloga.domain.auth.dto.LoginResult;
+import sopt.jeolloga.domain.auth.jwt.JwtTokenGenerator;
+import sopt.jeolloga.domain.auth.kakao.dto.KakaoTokenRes;
+import sopt.jeolloga.domain.auth.kakao.dto.KakaoUserRes;
+import sopt.jeolloga.domain.auth.kakao.OauthClientApi;
 import sopt.jeolloga.domain.member.Member;
 import sopt.jeolloga.domain.member.core.MemberRepository;
 

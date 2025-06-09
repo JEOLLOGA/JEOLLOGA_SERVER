@@ -1,7 +1,8 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sopt.jeolloga.domain.auth.jwt.JwtTokenGenerator;
 
 @Service
 @RequiredArgsConstructor

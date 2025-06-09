@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
