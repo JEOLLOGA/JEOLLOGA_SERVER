@@ -1,9 +1,14 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
+import sopt.jeolloga.domain.auth.dto.LoginCommand;
+import sopt.jeolloga.domain.auth.dto.LoginResult;
+import sopt.jeolloga.domain.auth.service.LoginService;
+import sopt.jeolloga.domain.auth.service.LogoutService;
+import sopt.jeolloga.domain.auth.service.ReissueService;
 
 @RestController
 @RequestMapping("/api/auth/kakao")

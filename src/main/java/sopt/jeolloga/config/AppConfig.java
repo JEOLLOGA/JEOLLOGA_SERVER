@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import sopt.jeolloga.domain.auth.KakaoOauthProperties;
+import sopt.jeolloga.domain.auth.kakao.KakaoOauthProperties;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration

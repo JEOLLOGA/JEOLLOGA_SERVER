@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

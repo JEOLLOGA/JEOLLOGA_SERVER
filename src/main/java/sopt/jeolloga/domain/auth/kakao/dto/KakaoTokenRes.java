@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

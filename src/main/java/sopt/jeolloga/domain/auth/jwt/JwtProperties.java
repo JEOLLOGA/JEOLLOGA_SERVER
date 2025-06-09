@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

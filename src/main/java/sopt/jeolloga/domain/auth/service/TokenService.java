@@ -1,7 +1,9 @@
-package sopt.jeolloga.domain.auth;
+package sopt.jeolloga.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sopt.jeolloga.domain.auth.RefreshToken;
+import sopt.jeolloga.domain.auth.repository.RefreshTokenRepository;
 
 @Service
 @RequiredArgsConstructor
