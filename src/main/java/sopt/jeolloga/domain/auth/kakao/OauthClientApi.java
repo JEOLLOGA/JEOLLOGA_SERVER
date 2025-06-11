@@ -8,6 +8,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import sopt.jeolloga.domain.auth.kakao.dto.KaKaoUnlinkRes;
 import sopt.jeolloga.domain.auth.kakao.dto.KakaoTokenRes;
 import sopt.jeolloga.domain.auth.kakao.dto.KakaoUserRes;
+import sopt.jeolloga.exception.BusinessErrorCode;
+import sopt.jeolloga.exception.BusinessException;
+import org.springframework.http.HttpStatus;
 
 @Component
 @RequiredArgsConstructor

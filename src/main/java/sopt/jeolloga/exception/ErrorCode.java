@@ -10,7 +10,7 @@ public enum ErrorCode {
     INVALID_REQUEST_BODY(HttpStatus.BAD_REQUEST, "요청 본문이 잘못되었습니다."),
 
     // 401 Unauthorized
-    UNAUTHORIZED_HEADER(HttpStatus.UNAUTHORIZED, "요청 헤더에 사용자 ID가 없습니다."),
+    UNAUTHORIZED_HEADER(HttpStatus.UNAUTHORIZED, "요청 헤더가 올바르지 않는 토큰입니다."),
 
     // 404 NOT FOUND
     NOT_FOUND_URL(HttpStatus.NOT_FOUND, "요청한 URL을 찾을 수 없습니다."),
