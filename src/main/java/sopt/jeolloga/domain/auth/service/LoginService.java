@@ -31,6 +31,15 @@ public class LoginService {
 
         tokenService.save(member.getId(), refreshToken);
 
-        return new LoginResult(accessToken, refreshToken);
+        return new LoginResult(accessToken, refreshToken, token.accessToken());
+    }
+
+    public void unlinkFromKakao(String kakaoAccessToken) {
+        Long kakaoUserId = oauthClientApi.unlink(kakaoAccessToken);
+        memberRepository.findByKakaoUserId(kakaoUserId)
+                .ifPresent(member -> {
+                    tokenService.delete(member.getId());
+                    memberRepository.delete(member);
+                });
     }
 }
