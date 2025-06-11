@@ -10,11 +10,17 @@ import sopt.jeolloga.exception.BusinessException;
 @Service
 @RequiredArgsConstructor
 public class ReissueService {
+
     private final TokenService tokenService;
     private final JwtTokenGenerator jwtTokenGenerator;
 
     public LoginResult reissue(String refreshToken) {
-        Long userId = jwtTokenGenerator.extractUserId(refreshToken);
+        Long userId;
+        try {
+            userId = jwtTokenGenerator.extractUserId(refreshToken);
+        } catch (Exception e) {
+            throw new BusinessException(BusinessErrorCode.INVALID_SERVER_JWT);
+        }
 
         if (!tokenService.validate(userId, refreshToken)) {
             throw new BusinessException(BusinessErrorCode.KAKAO_UNAUTHORIZED_REFRESHTOKEN);
@@ -23,6 +29,7 @@ public class ReissueService {
         String newAccess = jwtTokenGenerator.generateAccessToken(userId);
         String newRefresh = jwtTokenGenerator.generateRefreshToken(userId);
         tokenService.save(userId, newRefresh);
+
         return new LoginResult(newAccess, newRefresh, null);
     }
 }

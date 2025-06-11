@@ -10,10 +10,13 @@ import sopt.jeolloga.domain.auth.kakao.dto.KakaoUserRes;
 import sopt.jeolloga.domain.auth.kakao.OauthClientApi;
 import sopt.jeolloga.domain.member.Member;
 import sopt.jeolloga.domain.member.core.MemberRepository;
+import sopt.jeolloga.exception.BusinessErrorCode;
+import sopt.jeolloga.exception.BusinessException;
 
 @Service
 @RequiredArgsConstructor
 public class LoginService {
+
     private final OauthClientApi oauthClientApi;
     private final MemberRepository memberRepository;
     private final JwtTokenGenerator jwtTokenGenerator;
@@ -21,7 +24,14 @@ public class LoginService {
 
     public LoginResult login(LoginCommand command) {
         KakaoTokenRes token = oauthClientApi.fetchToken(command.code());
+        if (token == null || token.accessToken() == null) {
+            throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
+        }
+
         KakaoUserRes user = oauthClientApi.fetchUser(token.accessToken());
+        if (user == null || user.id() == null) {
+            throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
+        }
 
         Member member = memberRepository.findByKakaoUserId(user.id())
                 .orElseGet(() -> memberRepository.save(user.toEntity()));
@@ -36,10 +46,14 @@ public class LoginService {
 
     public void unlinkFromKakao(String kakaoAccessToken) {
         Long kakaoUserId = oauthClientApi.unlink(kakaoAccessToken);
-        memberRepository.findByKakaoUserId(kakaoUserId)
-                .ifPresent(member -> {
-                    tokenService.delete(member.getId());
-                    memberRepository.delete(member);
-                });
+        if (kakaoUserId == null) {
+            throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
+        }
+
+        Member member = memberRepository.findByKakaoUserId(kakaoUserId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
+
+        tokenService.delete(member.getId());
+        memberRepository.delete(member);
     }
 }
