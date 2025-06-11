@@ -23,6 +23,6 @@ public class ReissueService {
         String newAccess = jwtTokenGenerator.generateAccessToken(userId);
         String newRefresh = jwtTokenGenerator.generateRefreshToken(userId);
         tokenService.save(userId, newRefresh);
-        return new LoginResult(newAccess, newRefresh);
+        return new LoginResult(newAccess, newRefresh, null);
     }
 }

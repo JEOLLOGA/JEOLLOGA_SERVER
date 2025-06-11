@@ -35,4 +35,10 @@ public class OAuthController {
     public ResponseEntity<ApiResponse<?>> reissue(@RequestHeader("refreshToken") String refreshToken) {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+    @PostMapping("/unlink")
+    public ResponseEntity<ApiResponse<?>> unlink(@RequestHeader("kakaoAccessToken") String kakaoAccessToken) {
+        loginService.unlinkFromKakao(kakaoAccessToken);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 }

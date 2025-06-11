@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import sopt.jeolloga.domain.auth.kakao.dto.KaKaoUnlinkRes;
 import sopt.jeolloga.domain.auth.kakao.dto.KakaoTokenRes;
 import sopt.jeolloga.domain.auth.kakao.dto.KakaoUserRes;
 
@@ -37,5 +38,17 @@ public class OauthClientApi {
                 .retrieve()
                 .bodyToMono(KakaoUserRes.class)
                 .block();
+    }
+
+    public Long unlink(String kakaoAccessToken) {
+        return WebClient.create("https://kapi.kakao.com")
+                .post()
+                .uri("/v1/user/unlink")
+                .header("Authorization", "Bearer " + kakaoAccessToken)
+                .header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
+                .retrieve()
+                .bodyToMono(KaKaoUnlinkRes.class)
+                .block()
+                .id();
     }
 }

@@ -16,6 +16,9 @@ class JwtTokenValidator {
 
     public void validate(String token) {
         try {
+            if (!token.contains(".")) {
+                throw new BusinessException(BusinessErrorCode.INVALID_SERVER_JWT);
+            }
             Jwts.parserBuilder()
                     .setSigningKey(jwtProperties.secret().getBytes(StandardCharsets.UTF_8))
                     .build()
