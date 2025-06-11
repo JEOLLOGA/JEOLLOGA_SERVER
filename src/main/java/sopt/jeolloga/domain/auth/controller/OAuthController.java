@@ -32,8 +32,7 @@ public class OAuthController {
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<ApiResponse<?>> reissue(@RequestHeader("userId") Long userId,
-                                               @RequestHeader("refreshToken") String refreshToken) {
-        return ResponseEntity.ok(ApiResponse.success(reissueService.reissue(userId, refreshToken)));
+    public ResponseEntity<ApiResponse<?>> reissue(@RequestHeader("refreshToken") String refreshToken) {
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

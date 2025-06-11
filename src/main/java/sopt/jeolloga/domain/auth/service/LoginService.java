@@ -27,7 +27,7 @@ public class LoginService {
                 .orElseGet(() -> memberRepository.save(user.toEntity()));
 
         String accessToken = jwtTokenGenerator.generateAccessToken(member.getId());
-        String refreshToken = jwtTokenGenerator.generateRefreshToken();
+        String refreshToken = jwtTokenGenerator.generateRefreshToken(member.getId());
 
         tokenService.save(member.getId(), refreshToken);
 

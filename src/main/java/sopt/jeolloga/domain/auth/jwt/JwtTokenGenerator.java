@@ -39,11 +39,12 @@ public class JwtTokenGenerator {
         return Long.parseLong(claims.getSubject());
     }
 
-    public String generateRefreshToken() {
+    public String generateRefreshToken(Long userId) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + jwtProperties.refreshExpiration());
 
         return Jwts.builder()
+                .setSubject(userId.toString())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.secret().getBytes(StandardCharsets.UTF_8))
