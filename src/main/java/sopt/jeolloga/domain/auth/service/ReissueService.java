@@ -13,12 +13,15 @@ public class ReissueService {
     private final TokenService tokenService;
     private final JwtTokenGenerator jwtTokenGenerator;
 
-    public LoginResult reissue(Long userId, String refreshToken) {
+    public LoginResult reissue(String refreshToken) {
+        Long userId = jwtTokenGenerator.extractUserId(refreshToken);
+
         if (!tokenService.validate(userId, refreshToken)) {
             throw new BusinessException(BusinessErrorCode.KAKAO_UNAUTHORIZED_REFRESHTOKEN);
         }
+
         String newAccess = jwtTokenGenerator.generateAccessToken(userId);
-        String newRefresh = jwtTokenGenerator.generateRefreshToken();
+        String newRefresh = jwtTokenGenerator.generateRefreshToken(userId);
         tokenService.save(userId, newRefresh);
         return new LoginResult(newAccess, newRefresh);
     }
