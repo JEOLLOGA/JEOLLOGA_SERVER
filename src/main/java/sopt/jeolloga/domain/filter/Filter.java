@@ -27,7 +27,7 @@ public class Filter {
     private int activity;
 
     @Column
-    private int ect;
+    private int etc;
 
     @Column
     private int price;
@@ -36,12 +36,12 @@ public class Filter {
 
     }
 
-    public Filter(Templestay templestay, int region, int type, int activity, int ect, int price) {
+    public Filter(Templestay templestay, int region, int type, int activity, int etc, int price) {
         this.templestay = templestay;
         this.region = region;
         this.type = type;
         this.activity = activity;
-        this.ect = ect;
+        this.etc = etc;
         this.price = price;
     }
 }

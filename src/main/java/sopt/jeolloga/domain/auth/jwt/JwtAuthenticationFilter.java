@@ -37,6 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.equals("/api/auth/kakao/unlink");
+        return path.startsWith("/api/") || path.startsWith("/auth/");
     }
 }

@@ -17,7 +17,6 @@ import sopt.jeolloga.domain.auth.service.ReissueService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth/kakao")
 @RequiredArgsConstructor
 public class OAuthController {
     private final LoginService loginService;
@@ -25,20 +24,13 @@ public class OAuthController {
     private final ReissueService reissueService;
     private final JwtCookieProvider jwtCookieProvider;
 
-    @GetMapping("/login")
+    @GetMapping("/auth/login")
     public ResponseEntity<ApiResponse<?>> login(@RequestParam String code) {
         LoginResult result = loginService.login(new LoginCommand(code));
         return okWithCookies("로그인 성공", jwtCookieProvider.createAllCookies(result));
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<?>> logout(HttpServletRequest request) {
-        String accessToken = jwtCookieProvider.extractAccessToken(request);
-        logoutService.logout(accessToken);
-        return okWithCookies("로그아웃 성공", jwtCookieProvider.deleteAllCookies());
-    }
-
-    @PostMapping("/reissue")
+    @PostMapping("/auth/reissue")
     public ResponseEntity<ApiResponse<?>> reissue(HttpServletRequest request) {
         String refreshToken = jwtCookieProvider.extractRefreshToken(request);
         LoginResult result = reissueService.reissue(refreshToken);
@@ -49,7 +41,14 @@ public class OAuthController {
         return okWithCookies("토큰 재발급 완료", cookies);
     }
 
-    @PostMapping("/unlink")
+    @PostMapping("/user/auth/logout")
+    public ResponseEntity<ApiResponse<?>> logout(HttpServletRequest request) {
+        String accessToken = jwtCookieProvider.extractAccessToken(request);
+        logoutService.logout(accessToken);
+        return okWithCookies("로그아웃 성공", jwtCookieProvider.deleteAllCookies());
+    }
+
+    @PostMapping("/user/auth/unlink")
     public ResponseEntity<ApiResponse<?>> unlink(HttpServletRequest request) {
         String kakaoAccessToken = jwtCookieProvider.extractKakaoToken(request);
         loginService.unlinkFromKakao(kakaoAccessToken);
