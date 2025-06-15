@@ -1,6 +1,7 @@
 package sopt.jeolloga.domain.auth.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
@@ -9,25 +10,24 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class JwtCookieProvider {
+    private final JwtProperties jwtProperties;
+
     private static final String ACCESS_TOKEN_NAME = "accessToken";
     private static final String REFRESH_TOKEN_NAME = "refreshToken";
     private static final String KAKAO_TOKEN_NAME = "kakaoAccessToken";
 
-    private static final int ACCESS_TOKEN_EXPIRY = 60 * 60;
-    private static final int REFRESH_TOKEN_EXPIRY = 14 * 24 * 60 * 60;
-    private static final int KAKAO_TOKEN_EXPIRY = 60 * 60;
-
     public ResponseCookie createAccessTokenCookie(String accessToken) {
-        return createCookie(ACCESS_TOKEN_NAME, accessToken, ACCESS_TOKEN_EXPIRY);
+        return createCookie(ACCESS_TOKEN_NAME, accessToken, (int) jwtProperties.accessExpiration());
     }
 
     public ResponseCookie createRefreshTokenCookie(String refreshToken) {
-        return createCookie(REFRESH_TOKEN_NAME, refreshToken, REFRESH_TOKEN_EXPIRY);
+        return createCookie(REFRESH_TOKEN_NAME, refreshToken, (int) jwtProperties.refreshExpiration());
     }
 
     public ResponseCookie createKakaoTokenCookie(String value) {
-        return createCookie(KAKAO_TOKEN_NAME, value, KAKAO_TOKEN_EXPIRY);
+        return createCookie(KAKAO_TOKEN_NAME, value, (int) jwtProperties.kakaoExpiration());
     }
 
     public ResponseCookie deleteAccessTokenCookie() {
