@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  spring-v2:
+    container_name: spring_v2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8081:8080"
+    depends_on:
+      - redis
+    networks:
+      - jeolloga-network
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - jeolloga-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - spring-v2
+    networks:
+      - jeolloga-network
+
+networks:
+  jeolloga-network:
+    driver: bridge

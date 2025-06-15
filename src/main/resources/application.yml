@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+
+  redis:
+    host: ${SPRING_REDIS_HOST}
+    port: ${SPRING_REDIS_PORT}
+
+geocoding:
+  api:
+    key: ${GEOCODING_API_KEY}
+
+kakao:
+  client:
+    client-id: ${KAKAO_CLIENT_ID}
+    admin-key : ${KAKAO_ADMIN_KEY}
+    client-secret: ${KAKAO_CLIENT_SECRET}
+    client-authentication-method: ${KAKAO_CLIENT_AUTHENTICATION_METHOD}
+    authorization-grant-type : ${KAKAO_AUTHORIZATION_GRANT_TYPE}
+    redirect-uri: ${KAKAO_REDIRECT_URI}
+    scope:
+      - profile_nickname
+      - account_email
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: ${JWT_ACCESS_EXPIRATION}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+  kakao-expiration: ${JWT_KAKAO_EXPIRATION}
