@@ -13,10 +13,9 @@ public class LogoutService {
     private final TokenService tokenService;
     private final JwtTokenGenerator jwtTokenGenerator;
 
-    public void logout(String bearerToken) {
+    public void logout(String accessToken) {
         try {
-            String token = bearerToken.replace("Bearer ", "");
-            Long userId = jwtTokenGenerator.extractUserId(token);
+            Long userId = jwtTokenGenerator.extractUserId(accessToken);
             tokenService.delete(userId);
         } catch (Exception e) {
             throw new BusinessException(BusinessErrorCode.INVALID_SERVER_JWT);
