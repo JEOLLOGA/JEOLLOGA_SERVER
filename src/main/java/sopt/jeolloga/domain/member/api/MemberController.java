@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import sopt.jeolloga.domain.member.core.MemberService;
 
 @RestController
-@RequestMapping("/v2")
 public class MemberController {
     private final MemberService memberService;
 

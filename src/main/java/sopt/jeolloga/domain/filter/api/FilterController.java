@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import sopt.jeolloga.domain.filter.core.FilterService;
 
 @RestController
-@RequestMapping("/v2")
 public class FilterController {
     private final FilterService filterService;
 
