@@ -67,7 +67,7 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         builder.and(matchBitmask(f.region, regionMask));
         builder.and(matchBitmask(f.type, typeMask));
         builder.and(matchBitmask(f.activity, activityMask));
-        builder.and(matchBitmask(f.ect, etcMask));
+        builder.and(matchBitmask(f.etc, etcMask));
 
         return builder;
     }
