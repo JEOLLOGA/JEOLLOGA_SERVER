@@ -14,5 +14,6 @@ services:
       - sopt-jeolloga_templenet
 
 networks:
-  templenet:
+  sopt-jeolloga_templenet:
     external: true
+
