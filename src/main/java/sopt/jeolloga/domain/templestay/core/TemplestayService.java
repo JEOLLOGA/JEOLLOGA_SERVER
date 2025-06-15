@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 @Service
 public class TemplestayService {
     // 이번주 인기 템플스테이 아이디
-    private static final List<Long> RECOMMEND_TEMPLATESTAY_IDS = List.of(2302L, 2303L, 2304L);
+    private static final List<Long> RECOMMEND_TEMPLATESTAY_IDS = List.of(1L, 2L, 3L);
 
     private final TemplestayRepository templestayRepository;
     private final FilterRepository filterRepository;
