@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/v2")
 public class OAuthController {
     private final LoginService loginService;
     private final LogoutService logoutService;

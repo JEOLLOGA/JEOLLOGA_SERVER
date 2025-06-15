@@ -10,7 +10,7 @@ import sopt.jeolloga.domain.image.api.dto.TemplestayImgRes;
 import sopt.jeolloga.domain.image.core.ImageService;
 
 @RestController
-@RequestMapping("/api/templestay")
+@RequestMapping("/v2/api/templestay")
 public class ImageController {
     private final ImageService imageService;
 

@@ -1,9 +1,11 @@
 package sopt.jeolloga.domain.filter.api;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sopt.jeolloga.domain.filter.core.FilterService;
 
 @RestController
+@RequestMapping("/v2")
 public class FilterController {
     private final FilterService filterService;
 
