@@ -20,12 +20,12 @@ public class ImageService {
 
     @Transactional(readOnly = true)
     public TemplestayImgRes getTemplestayImgs(Long templestayId) {
-        boolean exists = imageRepository.existsByTemplestayId(templestayId);
+        boolean exists = imageRepository.existsByTemplestay_Id(templestayId);
         if (!exists) {
             throw new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY);
         }
 
-        List<Image> imageEntities = imageRepository.findByTemplestayId(templestayId);
+        List<Image> imageEntities = imageRepository.findByTemplestay_Id(templestayId);
 
         List<ImageRes> images = imageEntities.stream()
                 .map(image -> new ImageRes(image.getImgUrl()))

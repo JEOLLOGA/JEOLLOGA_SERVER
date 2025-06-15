@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    Optional<Image> findFirstByTemplestayIdOrderByIdAsc(Long templestayId);
-    List<Image> findByTemplestayId(Long templestayId);
-    boolean existsByTemplestayId(Long templestayId);
+    Optional<Image> findFirstByTemplestay_IdOrderByIdAsc(Long templestayId);
+    List<Image> findByTemplestay_Id(Long templestayId);
+    boolean existsByTemplestay_Id(Long templestayId);
 }

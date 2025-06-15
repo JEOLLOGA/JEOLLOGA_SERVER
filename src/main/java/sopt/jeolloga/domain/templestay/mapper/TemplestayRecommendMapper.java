@@ -31,7 +31,7 @@ public class TemplestayRecommendMapper {
             return Optional.empty();
         }
 
-        Filter filter = filterRepository.findFirstByTemplestayId(id)
+        Filter filter = filterRepository.findFirstByTemplestay_Id(id)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_FILTER));
 
         String region = Region.fromMask(filter.getRegion()).stream()
@@ -39,7 +39,7 @@ public class TemplestayRecommendMapper {
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");
 
-        String imgUrl = imageRepository.findFirstByTemplestayIdOrderByIdAsc(id)
+        String imgUrl = imageRepository.findFirstByTemplestay_IdOrderByIdAsc(id)
                 .map(Image::getImgUrl)
                 .orElse(null);
 

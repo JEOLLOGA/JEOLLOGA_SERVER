@@ -14,7 +14,7 @@ public class Filter {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "templestay_id", nullable = false)
+    @JoinColumn(name = "templestay_id")
     private Templestay templestay;
 
     @Column

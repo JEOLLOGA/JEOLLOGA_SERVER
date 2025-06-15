@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface FilterRepository extends JpaRepository<Filter, Long> {
-    Optional<Filter> findFirstByTemplestayId(Long templestayId);
+    Optional<Filter> findFirstByTemplestay_Id(Long templestayId);
 }
