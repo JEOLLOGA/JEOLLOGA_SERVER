@@ -3,8 +3,10 @@ package sopt.jeolloga.domain.auth.jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
+import sopt.jeolloga.domain.auth.dto.LoginResult;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class JwtCookieProvider {
@@ -52,6 +54,21 @@ public class JwtCookieProvider {
         return extractCookie(request, KAKAO_TOKEN_NAME);
     }
 
+    public List<ResponseCookie> createAllCookies(LoginResult result) {
+        return List.of(
+                createAccessTokenCookie(result.accessToken()),
+                createRefreshTokenCookie(result.refreshToken()),
+                createKakaoTokenCookie(result.kakaoAccessToken())
+        );
+    }
+
+    public List<ResponseCookie> deleteAllCookies() {
+        return List.of(
+                deleteAccessTokenCookie(),
+                deleteRefreshTokenCookie(),
+                deleteKakaoTokenCookie()
+        );
+    }
     private ResponseCookie createCookie(String name, String value, int maxAge) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
