@@ -10,5 +10,5 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @Configuration
 @EnableRedisRepositories(basePackages = "sopt.jeolloga.domain.auth.repository")
 public class RedisConfig {
-    
+
 }

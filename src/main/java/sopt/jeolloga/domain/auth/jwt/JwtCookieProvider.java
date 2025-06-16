@@ -69,10 +69,12 @@ public class JwtCookieProvider {
                 deleteKakaoTokenCookie()
         );
     }
+
+    //http로 개발 및 테스트 중일땨는 secure false로 추후 메인배포에서는 true값으로 변경
     private ResponseCookie createCookie(String name, String value, int maxAge) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .sameSite("None")
                 .path("/")
                 .maxAge(maxAge)
@@ -82,7 +84,7 @@ public class JwtCookieProvider {
     private ResponseCookie deleteCookie(String name) {
         return ResponseCookie.from(name, "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .sameSite("None")
                 .path("/")
                 .maxAge(0)
