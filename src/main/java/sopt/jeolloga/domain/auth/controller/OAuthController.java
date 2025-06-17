@@ -25,8 +25,8 @@ public class OAuthController {
     private final JwtCookieProvider jwtCookieProvider;
 
     @GetMapping("/auth/login")
-    public ResponseEntity<ApiResponse<?>> login(@RequestParam String code) {
-        LoginResult result = loginService.login(new LoginCommand(code));
+    public ResponseEntity<ApiResponse<?>> login(@RequestParam String code, HttpServletRequest request) {
+        LoginResult result = loginService.login(new LoginCommand(code), request);
         return okWithCookies("로그인 성공", jwtCookieProvider.createAllCookies(result));
     }
 

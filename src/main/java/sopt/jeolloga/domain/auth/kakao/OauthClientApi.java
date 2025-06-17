@@ -23,14 +23,14 @@ public class OauthClientApi {
     private final WebClient kakaoApiClient;  // baseUrl: https://kapi.kakao.com
     private final KakaoOauthProperties properties;
 
-    public KakaoTokenRes fetchToken(String code) {
+    public KakaoTokenRes fetchToken(String code, String redirectUri) {
         try {
             return kakaoAuthClient.post()
                     .uri("/oauth/token")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(BodyInserters.fromFormData("grant_type", "authorization_code")
                             .with("client_id", properties.clientId())
-                            .with("redirect_uri", properties.redirectUri())
+                            .with("redirect_uri", redirectUri)
                             .with("code", code)
                             .with("client_secret", properties.clientSecret()))
                     .retrieve()

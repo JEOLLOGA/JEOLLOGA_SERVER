@@ -1,10 +1,12 @@
 package sopt.jeolloga.domain.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sopt.jeolloga.domain.auth.dto.LoginCommand;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
 import sopt.jeolloga.domain.auth.jwt.JwtTokenGenerator;
+import sopt.jeolloga.domain.auth.kakao.RedirectUriResolver;
 import sopt.jeolloga.domain.auth.kakao.dto.KakaoTokenRes;
 import sopt.jeolloga.domain.auth.kakao.dto.KakaoUserRes;
 import sopt.jeolloga.domain.auth.kakao.OauthClientApi;
@@ -21,9 +23,12 @@ public class LoginService {
     private final MemberRepository memberRepository;
     private final JwtTokenGenerator jwtTokenGenerator;
     private final TokenService tokenService;
+    private final RedirectUriResolver redirectUriResolver;
 
-    public LoginResult login(LoginCommand command) {
-        KakaoTokenRes token = oauthClientApi.fetchToken(command.code());
+    public LoginResult login(LoginCommand command, HttpServletRequest request) {
+        String redirectUri = redirectUriResolver.resolve(request);
+        KakaoTokenRes token = oauthClientApi.fetchToken(command.code(), redirectUri);
+
         if (token == null || token.accessToken() == null) {
             throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
         }
