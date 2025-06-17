@@ -29,8 +29,7 @@ public class LoginService {
 
     public LoginResult login(LoginCommand command, HttpServletRequest request) {
         String redirectUri = redirectUriResolver.resolve(request);
-        log.info("🔁 사용된 redirectUri = {}", redirectUri);
-        
+
         KakaoTokenRes token = oauthClientApi.fetchToken(command.code(), redirectUri);
 
         if (token == null || token.accessToken() == null) {
