@@ -2,6 +2,7 @@ package sopt.jeolloga.domain.auth.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sopt.jeolloga.domain.auth.dto.LoginCommand;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
@@ -17,6 +18,7 @@ import sopt.jeolloga.exception.BusinessException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LoginService {
 
     private final OauthClientApi oauthClientApi;
@@ -27,6 +29,8 @@ public class LoginService {
 
     public LoginResult login(LoginCommand command, HttpServletRequest request) {
         String redirectUri = redirectUriResolver.resolve(request);
+        log.info("🔁 사용된 redirectUri = {}", redirectUri);
+        
         KakaoTokenRes token = oauthClientApi.fetchToken(command.code(), redirectUri);
 
         if (token == null || token.accessToken() == null) {
