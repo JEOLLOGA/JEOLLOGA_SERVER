@@ -3,7 +3,9 @@ package sopt.jeolloga.domain.auth.dto;
 public record LoginResult(
         String accessToken,
         String refreshToken,
-        String kakaoAccessToken
+        String kakaoAccessToken,
+        Long userId,
+        String nickname
 ) {
 
 }

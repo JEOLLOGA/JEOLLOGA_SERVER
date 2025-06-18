@@ -49,7 +49,12 @@ public class LoginService {
 
         tokenService.save(member.getId(), refreshToken);
 
-        return new LoginResult(accessToken, refreshToken, token.accessToken());
+        return new LoginResult(
+                accessToken,
+                refreshToken,
+                token.accessToken(),
+                member.getId(),
+                member.getNickname());
     }
 
     public void unlinkFromKakao(String kakaoAccessToken) {
