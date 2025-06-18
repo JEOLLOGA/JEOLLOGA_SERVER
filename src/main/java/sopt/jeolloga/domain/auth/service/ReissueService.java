@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sopt.jeolloga.domain.auth.jwt.JwtTokenGenerator;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
+import sopt.jeolloga.domain.member.Member;
+import sopt.jeolloga.domain.member.core.MemberRepository;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
 
@@ -13,6 +15,7 @@ public class ReissueService {
 
     private final TokenService tokenService;
     private final JwtTokenGenerator jwtTokenGenerator;
+    private final MemberRepository memberRepository;
 
     public LoginResult reissue(String refreshToken) {
         Long userId;
@@ -30,6 +33,15 @@ public class ReissueService {
         String newRefresh = jwtTokenGenerator.generateRefreshToken(userId);
         tokenService.save(userId, newRefresh);
 
-        return new LoginResult(newAccess, newRefresh, null);
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
+
+        return new LoginResult(
+                newAccess,
+                newRefresh,
+                null,
+                member.getId(),
+                member.getNickname()
+        );
     }
 }
