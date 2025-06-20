@@ -27,7 +27,15 @@ public class OAuthController {
     @GetMapping("/auth/login")
     public ResponseEntity<ApiResponse<?>> login(@RequestParam String code, HttpServletRequest request) {
         LoginResult result = loginService.login(new LoginCommand(code), request);
-        return okWithCookies("로그인 성공", jwtCookieProvider.createAllCookies(result));
+
+        List<ResponseCookie> cookies = jwtCookieProvider.createAllCookies(result);
+
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        for (ResponseCookie cookie : cookies) {
+            builder.header(HttpHeaders.SET_COOKIE, cookie.toString());
+        }
+
+        return builder.body(ApiResponse.success(result));
     }
 
     @PostMapping("/auth/reissue")
