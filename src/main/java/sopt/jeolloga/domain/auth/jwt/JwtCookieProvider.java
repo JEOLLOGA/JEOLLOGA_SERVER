@@ -17,30 +17,7 @@ public class JwtCookieProvider {
     private static final String ACCESS_TOKEN_NAME = "accessToken";
     private static final String REFRESH_TOKEN_NAME = "refreshToken";
     private static final String KAKAO_TOKEN_NAME = "kakaoAccessToken";
-
-    public ResponseCookie createAccessTokenCookie(String accessToken) {
-        return createCookie(ACCESS_TOKEN_NAME, accessToken, (int) jwtProperties.accessExpiration());
-    }
-
-    public ResponseCookie createRefreshTokenCookie(String refreshToken) {
-        return createCookie(REFRESH_TOKEN_NAME, refreshToken, (int) jwtProperties.refreshExpiration());
-    }
-
-    public ResponseCookie createKakaoTokenCookie(String value) {
-        return createCookie(KAKAO_TOKEN_NAME, value, (int) jwtProperties.kakaoExpiration());
-    }
-
-    public ResponseCookie deleteAccessTokenCookie() {
-        return deleteCookie(ACCESS_TOKEN_NAME);
-    }
-
-    public ResponseCookie deleteRefreshTokenCookie() {
-        return deleteCookie(REFRESH_TOKEN_NAME);
-    }
-
-    public ResponseCookie deleteKakaoTokenCookie() {
-        return deleteCookie(KAKAO_TOKEN_NAME);
-    }
+    private static final String LOCAL_IDENTIFIER = "localhost";
 
     public String extractAccessToken(HttpServletRequest request) {
         return extractCookie(request, ACCESS_TOKEN_NAME);
@@ -54,37 +31,52 @@ public class JwtCookieProvider {
         return extractCookie(request, KAKAO_TOKEN_NAME);
     }
 
-    public List<ResponseCookie> createAllCookies(LoginResult result) {
+    public List<ResponseCookie> createAllCookies(LoginResult result, HttpServletRequest request) {
         return List.of(
-                createAccessTokenCookie(result.accessToken()),
-                createRefreshTokenCookie(result.refreshToken()),
-                createKakaoTokenCookie(result.kakaoAccessToken())
+                createCookie(ACCESS_TOKEN_NAME, result.accessToken(), (int) jwtProperties.accessExpiration(), request),
+                createCookie(REFRESH_TOKEN_NAME, result.refreshToken(), (int) jwtProperties.refreshExpiration(), request),
+                createCookie(KAKAO_TOKEN_NAME, result.kakaoAccessToken(), (int) jwtProperties.kakaoExpiration(), request)
         );
     }
 
-    public List<ResponseCookie> deleteAllCookies() {
+    public List<ResponseCookie> deleteAllCookies(HttpServletRequest request) {
         return List.of(
-                deleteAccessTokenCookie(),
-                deleteRefreshTokenCookie(),
-                deleteKakaoTokenCookie()
+                deleteCookie(ACCESS_TOKEN_NAME, request),
+                deleteCookie(REFRESH_TOKEN_NAME, request),
+                deleteCookie(KAKAO_TOKEN_NAME, request)
         );
+    }
+
+    public List<ResponseCookie> recreateAccessAndRefreshCookies(LoginResult result, HttpServletRequest request) {
+        return List.of(
+                createCookie(ACCESS_TOKEN_NAME, result.accessToken(), (int) jwtProperties.accessExpiration(), request),
+                createCookie(REFRESH_TOKEN_NAME, result.refreshToken(), (int) jwtProperties.refreshExpiration(), request)
+        );
+    }
+
+    private boolean isSecure(HttpServletRequest request) {
+        String origin = request.getHeader("Origin");
+        String referer = request.getHeader("Referer");
+        String base = origin != null ? origin : referer;
+
+        return base != null && !base.contains(LOCAL_IDENTIFIER);
     }
 
     //http로 개발 및 테스트 중일땨는 secure false로 추후 메인배포에서는 true값으로 변경
-    private ResponseCookie createCookie(String name, String value, int maxAge) {
+    private ResponseCookie createCookie(String name, String value, int maxAge, HttpServletRequest request) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
-                .secure(false)
+                .secure(isSecure(request))
                 .sameSite("None")
                 .path("/")
                 .maxAge(maxAge)
                 .build();
     }
 
-    private ResponseCookie deleteCookie(String name) {
+    private ResponseCookie deleteCookie(String name, HttpServletRequest request) {
         return ResponseCookie.from(name, "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(isSecure(request))
                 .sameSite("None")
                 .path("/")
                 .maxAge(0)
