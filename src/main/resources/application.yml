@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://jeolloga-database.crwyiaesc6os.ap-northeast-2.rds.amazonaws.com:3306/newjeolloga
-    username: root
-    password: jeolloga1221
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -13,8 +13,9 @@ spring:
     open-in-view: false
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+      password: ${SPRING_DATA_REDIS_PASSWORD}
 
   mvc:
     throw-exception-if-no-handler-found: true
@@ -32,17 +33,18 @@ logging:
 
 kakao:
   client:
-    client-id: 350e48505b8985851a292bc14b4b6652
-    admin-key: eb39339ae43bc5329356e7b3c3971493
-    client-secret: kgc3xRyse3amHz5aTwrmdLBtT5I3yYky
-    client-authentication-method: client_secret_post
-    authorization-grant-type: authorization_code
+    client-id: ${KAKAO_CLIENT_ID}
+    admin-key: ${KAKAO_ADMIN_KEY}
+    client-secret: ${KAKAO_CLIENT_SECRET}
+    client-authentication-method: ${KAKAO_CLIENT_AUTHENTICATION_METHOD}
+    authorization-grant-type: ${KAKAO_AUTHORIZATION_GRANT_TYPE}
+    redirect-uri: ${KAKAO_REDIRECT_URI}
     scope:
       - profile_nickname
       - account_email
 
 jwt:
-  secret: MinjeongDajinSeonghuiTaewookAyoungHoyoungGahyeonGayoonSoyoungSeunghyunYoungkeongYoumin
-  access-expiration: 3600
-  refresh-expiration: 1209600
-  kakao-expiration: 3600
+  secret: ${JWT_SECRET}
+  access-expiration: ${JWT_ACCESS_EXPIRATION}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+  kakao-expiration: ${JWT_KAKAO_EXPIRATION}
