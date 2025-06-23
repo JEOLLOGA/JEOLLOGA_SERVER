@@ -54,20 +54,17 @@ public class JwtCookieProvider {
         );
     }
 
+    //http로 개발 및 테스트 중일땨는 secure false로 추후 메인배포에서는 true값으로 변경
     private boolean isSecure(HttpServletRequest request) {
         String origin = request.getHeader("Origin");
-        String referer = request.getHeader("Referer");
-        String base = origin != null ? origin : referer;
-
-        return base != null && !base.contains(LOCAL_IDENTIFIER);
+        return origin != null && origin.startsWith("https");
     }
 
-    //http로 개발 및 테스트 중일땨는 secure false로 추후 메인배포에서는 true값으로 변경
     private ResponseCookie createCookie(String name, String value, int maxAge, HttpServletRequest request) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(isSecure(request))
-                .sameSite("None")
+                .sameSite(isSecure(request) ? "None" : "Lax")
                 .path("/")
                 .maxAge(maxAge)
                 .build();
@@ -77,7 +74,7 @@ public class JwtCookieProvider {
         return ResponseCookie.from(name, "")
                 .httpOnly(true)
                 .secure(isSecure(request))
-                .sameSite("None")
+                .sameSite(isSecure(request) ? "None" : "Lax")
                 .path("/")
                 .maxAge(0)
                 .build();
