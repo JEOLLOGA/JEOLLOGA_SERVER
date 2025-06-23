@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
 import sopt.jeolloga.domain.auth.dto.LoginCommand;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
+import sopt.jeolloga.domain.auth.dto.LoginUserInfo;
 import sopt.jeolloga.domain.auth.jwt.JwtCookieProvider;
 import sopt.jeolloga.domain.auth.service.LoginService;
 import sopt.jeolloga.domain.auth.service.LogoutService;
@@ -28,7 +29,10 @@ public class OAuthController {
     public ResponseEntity<ApiResponse<?>> login(@RequestParam String code, HttpServletRequest request) {
         LoginResult result = loginService.login(new LoginCommand(code), request);
         List<ResponseCookie> cookies = jwtCookieProvider.createAllCookies(result, request);
-        return withCookies(cookies).body(ApiResponse.success("로그인 성공"));
+
+        LoginUserInfo userInfo = new LoginUserInfo(result.userId(), result.nickname());
+
+        return withCookies(cookies).body(ApiResponse.success(userInfo));
     }
 
     @PostMapping("/auth/reissue")

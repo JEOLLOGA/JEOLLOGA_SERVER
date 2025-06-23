@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
+import sopt.jeolloga.domain.auth.kakao.RedirectUriResolver;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtCookieProvider {
     private final JwtProperties jwtProperties;
+    private final RedirectUriResolver redirectUriResolver;
 
     private static final String ACCESS_TOKEN_NAME = "accessToken";
     private static final String REFRESH_TOKEN_NAME = "refreshToken";
     private static final String KAKAO_TOKEN_NAME = "kakaoAccessToken";
-    private static final String LOCAL_IDENTIFIER = "localhost";
 
     public String extractAccessToken(HttpServletRequest request) {
         return extractCookie(request, ACCESS_TOKEN_NAME);
@@ -55,26 +56,25 @@ public class JwtCookieProvider {
     }
 
     //http로 개발 및 테스트 중일땨는 secure false로 추후 메인배포에서는 true값으로 변경
-    private boolean isSecure(HttpServletRequest request) {
-        String origin = request.getHeader("Origin");
-        return origin != null && origin.startsWith("https");
-    }
-
     private ResponseCookie createCookie(String name, String value, int maxAge, HttpServletRequest request) {
+        boolean isLocal = redirectUriResolver.isLocalRequest(request);
+
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
-                .secure(isSecure(request))
-                .sameSite(isSecure(request) ? "None" : "Lax")
+                .secure(!isLocal)
+                .sameSite(isLocal ? "Lax" : "None")
                 .path("/")
                 .maxAge(maxAge)
                 .build();
     }
 
     private ResponseCookie deleteCookie(String name, HttpServletRequest request) {
+        boolean isLocal = redirectUriResolver.isLocalRequest(request);
+
         return ResponseCookie.from(name, "")
                 .httpOnly(true)
-                .secure(isSecure(request))
-                .sameSite(isSecure(request) ? "None" : "Lax")
+                .secure(!isLocal)
+                .sameSite(isLocal ? "Lax" : "None")
                 .path("/")
                 .maxAge(0)
                 .build();
