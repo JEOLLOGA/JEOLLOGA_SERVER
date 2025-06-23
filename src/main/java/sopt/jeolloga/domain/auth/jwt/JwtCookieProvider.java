@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtCookieProvider {
     private final JwtProperties jwtProperties;
-    private final RedirectUriResolver redirectUriResolver;
 
     private static final String ACCESS_TOKEN_NAME = "accessToken";
     private static final String REFRESH_TOKEN_NAME = "refreshToken";
@@ -57,24 +56,20 @@ public class JwtCookieProvider {
 
     //http로 개발 및 테스트 중일땨는 secure false로 추후 메인배포에서는 true값으로 변경
     private ResponseCookie createCookie(String name, String value, int maxAge, HttpServletRequest request) {
-        boolean isLocal = redirectUriResolver.isLocalRequest(request);
-
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
-                .secure(!isLocal)
-                .sameSite(isLocal ? "Lax" : "None")
+                .secure(true)
+                .sameSite("None")
                 .path("/")
                 .maxAge(maxAge)
                 .build();
     }
 
     private ResponseCookie deleteCookie(String name, HttpServletRequest request) {
-        boolean isLocal = redirectUriResolver.isLocalRequest(request);
-
         return ResponseCookie.from(name, "")
                 .httpOnly(true)
-                .secure(!isLocal)
-                .sameSite(isLocal ? "Lax" : "None")
+                .secure(true)
+                .sameSite("None")
                 .path("/")
                 .maxAge(0)
                 .build();
