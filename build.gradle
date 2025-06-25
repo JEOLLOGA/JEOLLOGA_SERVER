@@ -42,6 +42,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework:spring-webflux'
+
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
 }
 
 def querydslDir = "$buildDir/generated"

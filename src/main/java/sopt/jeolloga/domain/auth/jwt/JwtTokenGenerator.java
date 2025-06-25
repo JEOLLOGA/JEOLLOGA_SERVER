@@ -26,7 +26,8 @@ public class JwtTokenGenerator {
                 .getBody();
 
         Long userId = Long.parseLong(claims.getSubject());
-        return new UsernamePasswordAuthenticationToken(userId, "", List.of());
+        CustomUserDetails userDetails = new CustomUserDetails(userId);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     public Long extractUserId(String token) {
