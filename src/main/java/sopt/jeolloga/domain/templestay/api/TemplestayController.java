@@ -1,9 +1,12 @@
 package sopt.jeolloga.domain.templestay.api;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
+import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
+import sopt.jeolloga.domain.templestay.api.dto.TemplestayListRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendListRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendRes;
 import sopt.jeolloga.domain.templestay.core.TemplestayService;
@@ -33,5 +36,19 @@ public class TemplestayController {
     public ResponseEntity<ApiResponse<?>> updateView(@PathVariable Long id) {
         templestayService.updateView(id);
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<?>> getTepmestays(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(required = false) String region,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String activity,
+            @RequestParam(required = false) String etc,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String search
+            ) {
+        TemplestayListRes templestayListRes = templestayService.getTemplestays(region, type, activity, etc, sort, search, customUserDetails);
+        return ResponseEntity.ok(ApiResponse.success(templestayListRes));
     }
 }
