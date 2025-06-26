@@ -6,6 +6,7 @@ public record TemplestayRes(
         String TemplestayName,
         String region,
         String type,
+        String imgUrl,
         boolean wish
 ) {
 }

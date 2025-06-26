@@ -4,12 +4,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
+import sopt.jeolloga.common.filter.Activity;
+import sopt.jeolloga.common.filter.EtcOption;
+import sopt.jeolloga.common.filter.Region;
+import sopt.jeolloga.common.filter.Type;
 import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayListRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendListRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendRes;
 import sopt.jeolloga.domain.templestay.core.TemplestayService;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/templestay")
@@ -39,16 +45,20 @@ public class TemplestayController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<?>> getTepmestays(
+    public ResponseEntity<ApiResponse<?>> getTemplestays(
             @AuthenticationPrincipal CustomUserDetails user,
-            @RequestParam(required = false) String region,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String activity,
-            @RequestParam(required = false) String etc,
+            @RequestParam(required = false) Set<Region> region,
+            @RequestParam(required = false) Set<Type> type,
+            @RequestParam(required = false) Set<Activity> activity,
+            @RequestParam(required = false) Set<EtcOption> etc,
+            @RequestParam(required = false) Integer min,
+            @RequestParam(required = false) Integer max,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) String search
-            ) {
-        TemplestayListRes templestayListRes = templestayService.getTemplestays(region, type, activity, etc, sort, search, user);
+    ) {
+        TemplestayListRes templestayListRes = templestayService.getTemplestays(
+                region, type, activity, etc, min, max, sort, search, user
+        );
         return ResponseEntity.ok(ApiResponse.success(templestayListRes));
     }
 }
