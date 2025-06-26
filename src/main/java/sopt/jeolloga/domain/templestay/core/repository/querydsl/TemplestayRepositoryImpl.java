@@ -75,7 +75,6 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
             OR (
                 LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
                 OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
-                OR LOWER(t.introduction) LIKE CONCAT('%', LOWER(:search), '%')
             )
         )
         """ + orderByClause + """
@@ -124,7 +123,6 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
             OR (
                 LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
                 OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
-                OR LOWER(t.introduction) LIKE CONCAT('%', LOWER(:search), '%')
             )
         )
         """;
