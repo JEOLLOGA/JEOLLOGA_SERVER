@@ -40,7 +40,7 @@ public class TemplestayController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getTepmestays(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal CustomUserDetails user,
             @RequestParam(required = false) String region,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String activity,
@@ -48,7 +48,7 @@ public class TemplestayController {
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) String search
             ) {
-        TemplestayListRes templestayListRes = templestayService.getTemplestays(region, type, activity, etc, sort, search, customUserDetails);
+        TemplestayListRes templestayListRes = templestayService.getTemplestays(region, type, activity, etc, sort, search, user);
         return ResponseEntity.ok(ApiResponse.success(templestayListRes));
     }
 }
