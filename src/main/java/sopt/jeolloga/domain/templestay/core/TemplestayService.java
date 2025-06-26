@@ -98,12 +98,6 @@ public class TemplestayService {
         );
 
         List<TemplestayFilterDto> result = rows.stream()
-                .peek(row -> {
-                    System.out.println(">>> raw row = " + Arrays.toString(row));
-                    int typeBit = row[4] != null ? ((Number) row[4]).intValue() : 0;
-                    System.out.println(">>> type bit = " + typeBit);
-                    System.out.println(">>> decoded = " + decodeMask(typeBit, Type.class));
-                })
                 .map(row -> new TemplestayFilterDto(
                         ((Number) row[0]).longValue(),
                         (String) row[1],
@@ -113,7 +107,6 @@ public class TemplestayService {
                         row[5] != null ? ((Number) row[5]).intValue() : 0
                 ))
                 .toList();
-
 
         List<Long> templestayIds = result.stream()
                 .map(TemplestayFilterDto::templestayId)

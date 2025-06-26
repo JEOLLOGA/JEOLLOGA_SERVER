@@ -42,7 +42,7 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
             t.organized_name AS templestayName,
             f.region,
             f.type,
-            COALESCE(w.wish_count, 0) AS wishCount  -- 찜 개수
+            COALESCE(w.wish_count, 0) AS wishCount
         FROM templestay t
         JOIN filter f ON f.templestay_id = t.id
         LEFT JOIN (
@@ -50,10 +50,10 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
             FROM wishlist
             GROUP BY templestay_id
         ) w ON w.templestay_id = t.id
-        WHERE (:regionMask IS NULL OR :regionMask = 0 OR (f.region & :regionMask) != 0)
-          AND (:typeMask IS NULL OR :typeMask = 0 OR (f.type & :typeMask) != 0)
-          AND (:activityMask IS NULL OR :activityMask = 0 OR (f.activity & :activityMask) != 0)
-          AND (:etcMask IS NULL OR :etcMask = 0 OR (f.etc & :etcMask) != 0)
+        WHERE (:regionMask = 0 OR (f.region & :regionMask) != 0)
+          AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
+          AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)
+          AND (:etcMask = 0 OR (f.etc & :etcMask) != 0)
           AND (:minPrice IS NULL OR f.price >= :minPrice)
           AND (:maxPrice IS NULL OR f.price <= :maxPrice)
           AND (:search IS NULL OR :search = ''
@@ -63,20 +63,26 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         ORDER BY
             CASE WHEN :sort = 'wish_desc' THEN w.wish_count END DESC,
             CASE WHEN :sort = 'price_asc' THEN f.price END ASC,
-            RAND()
-    """;
+            t.id ASC
+        """;
 
         Query nativeQuery = em.createNativeQuery(sql)
-                .setParameter("regionMask", regionMask)
-                .setParameter("typeMask", typeMask)
-                .setParameter("activityMask", activityMask)
-                .setParameter("etcMask", etcMask)
+                .setParameter("regionMask", regionMask != null ? regionMask : 0)
+                .setParameter("typeMask", typeMask != null ? typeMask : 0)
+                .setParameter("activityMask", activityMask != null ? activityMask : 0)
+                .setParameter("etcMask", etcMask != null ? etcMask : 0)
                 .setParameter("minPrice", minPrice)
                 .setParameter("maxPrice", maxPrice)
-                .setParameter("sort", sort != null ? sort : "random")
+                .setParameter("sort", sort != null ? sort : "default")
                 .setParameter("search", search != null ? search : "");
 
-        return nativeQuery.getResultList();
+        List<Object[]> resultList = nativeQuery.getResultList();
+
+        if ("random".equalsIgnoreCase(sort)) {
+            Collections.shuffle(resultList);
+        }
+
+        return resultList;
     }
 
     @Override
