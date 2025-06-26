@@ -67,7 +67,7 @@ public class TemplestayService {
         templestay.updateView();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public TemplestayListRes getTemplestays(
             Set<Region> region,
             Set<Type> type,
