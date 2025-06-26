@@ -1,5 +1,6 @@
 package sopt.jeolloga.domain.templestay.core.repository.querydsl;
 
+import com.querydsl.core.Tuple;
 import sopt.jeolloga.domain.templestay.Templestay;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
 
@@ -16,4 +17,5 @@ public interface TemplestayCustomRepository {
             Integer minPrice, Integer maxPrice,
             String sort, String search
     );
+    Optional<Tuple> findDetailsWithPriceById(Long id);
 }

@@ -1,5 +1,6 @@
 package sopt.jeolloga.domain.templestay.core;
 
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,9 +51,16 @@ public class TemplestayService {
     }
 
     @Transactional(readOnly = true)
-    public TemplestayDetailsRes getDetailsTemplestay(Long id) {
-        return templestayRepository.findDetailsById(id)
-                .flatMap(TemplestayDetailsMapper::validateLatLon)
+    public TemplestayDetailsRes getDetailsTemplestay(Long id, Long userId) {
+        Tuple row = templestayRepository.findDetailsWithPriceById(id)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY));
+
+        Templestay templestay = row.get(0, Templestay.class);
+        Integer price = row.get(1, Integer.class);
+
+        boolean wish = userId != null && wishlistRepository.existsByMember_IdAndTemplestay_Id(userId, id);
+
+        return TemplestayDetailsMapper.map(templestay, price, wish)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY));
     }
 

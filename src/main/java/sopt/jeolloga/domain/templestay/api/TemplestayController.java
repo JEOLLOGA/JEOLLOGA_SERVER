@@ -36,8 +36,11 @@ public class TemplestayController {
     }
 
     @GetMapping("/details/{id}")
-    public ResponseEntity<ApiResponse<?>> getDetailsTemplestay(@PathVariable Long id) {
-        TemplestayDetailsRes templestayDetailsRes = templestayService.getDetailsTemplestay(id);
+    public ResponseEntity<ApiResponse<?>> getDetailsTemplestay(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long id) {
+        Long userId = (userDetails != null) ? userDetails.getUserId() : null;
+        TemplestayDetailsRes templestayDetailsRes = templestayService.getDetailsTemplestay(id, userId);
         return ResponseEntity.ok(ApiResponse.success(templestayDetailsRes));
     }
 
