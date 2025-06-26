@@ -1,6 +1,7 @@
 package sopt.jeolloga.domain.templestay.core.repository.querydsl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -171,5 +172,21 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
     private BooleanExpression matchBitmask(NumberPath<Integer> field, Integer mask) {
         if (mask == null || mask == 0) return null;
         return Expressions.booleanTemplate("({0} & {1}) != 0", field, mask);
+    }
+
+    @Override
+    public Optional<Tuple> findDetailsWithPriceById(Long id) {
+        QTemplestay t = QTemplestay.templestay;
+        QFilter f = QFilter.filter;
+
+        Tuple result = queryFactory
+                .select(t, f.price.min())
+                .from(t)
+                .leftJoin(t.filter, f)
+                .where(t.id.eq(id))
+                .groupBy(t.id)
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }

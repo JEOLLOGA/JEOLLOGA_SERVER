@@ -11,6 +11,7 @@ public record TemplestayDetailsRes(
         String introduction,
         String url,
         Double lat,
-        Double lon
+        Double lon,
+        boolean wish
 ) {
 }
