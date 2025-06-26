@@ -1,29 +1,83 @@
 package sopt.jeolloga.domain.templestay.core.repository.querydsl;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+import sopt.jeolloga.domain.filter.QFilter;
 import sopt.jeolloga.domain.templestay.QTemplestay;
 import sopt.jeolloga.domain.templestay.Templestay;
-import sopt.jeolloga.domain.filter.QFilter;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
-import sopt.jeolloga.domain.templestay.core.repository.querydsl.TemplestayCustomRepository;
-import sopt.jeolloga.util.SortUtils;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @RequiredArgsConstructor
 public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    @PersistenceContext
+    private final EntityManager em;
+
+    @Override
+    public List<Object[]> fetchFilteredTemplestays(
+            Integer regionMask, Integer typeMask, Integer activityMask, Integer etcMask,
+            Integer minPrice, Integer maxPrice, String sort, String search
+    ) {
+        String sql = """
+        SELECT 
+            t.id AS templestayId,
+            t.temple_name AS templeName,
+            t.organized_name AS templestayName,
+            f.region,
+            f.type,
+            COALESCE(w.wish_count, 0) AS wishCount  -- 찜 개수
+        FROM templestay t
+        JOIN filter f ON f.templestay_id = t.id
+        LEFT JOIN (
+            SELECT templestay_id, COUNT(*) AS wish_count
+            FROM wishlist
+            GROUP BY templestay_id
+        ) w ON w.templestay_id = t.id
+        WHERE (:regionMask IS NULL OR :regionMask = 0 OR (f.region & :regionMask) != 0)
+          AND (:typeMask IS NULL OR :typeMask = 0 OR (f.type & :typeMask) != 0)
+          AND (:activityMask IS NULL OR :activityMask = 0 OR (f.activity & :activityMask) != 0)
+          AND (:etcMask IS NULL OR :etcMask = 0 OR (f.etc & :etcMask) != 0)
+          AND (:minPrice IS NULL OR f.price >= :minPrice)
+          AND (:maxPrice IS NULL OR f.price <= :maxPrice)
+          AND (:search IS NULL OR :search = ''
+              OR LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
+              OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
+              OR LOWER(t.introduction) LIKE CONCAT('%', LOWER(:search), '%'))
+        ORDER BY
+            CASE WHEN :sort = 'wish_desc' THEN w.wish_count END DESC,
+            CASE WHEN :sort = 'price_asc' THEN f.price END ASC,
+            RAND()
+    """;
+
+        Query nativeQuery = em.createNativeQuery(sql)
+                .setParameter("regionMask", regionMask)
+                .setParameter("typeMask", typeMask)
+                .setParameter("activityMask", activityMask)
+                .setParameter("etcMask", etcMask)
+                .setParameter("minPrice", minPrice)
+                .setParameter("maxPrice", maxPrice)
+                .setParameter("sort", sort != null ? sort : "random")
+                .setParameter("search", search != null ? search : "");
+
+        return nativeQuery.getResultList();
+    }
 
     @Override
     public List<Templestay> searchByFilters(Integer regionMask, Integer typeMask, Integer activityMask, Integer etcMask) {
@@ -55,28 +109,11 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         }
 
         return queryFactory
-                .select(t.count()) // distinct 제거하여 count 최적화
+                .select(t.count())
                 .from(t)
                 .join(t.filter, f)
                 .where(builder)
                 .fetchOne();
-    }
-
-    private BooleanBuilder buildFilterConditions(QFilter f, Integer regionMask, Integer typeMask, Integer activityMask, Integer etcMask) {
-        BooleanBuilder builder = new BooleanBuilder();
-
-        builder.and(matchBitmask(f.region, regionMask));
-        builder.and(matchBitmask(f.type, typeMask));
-        builder.and(matchBitmask(f.activity, activityMask));
-        builder.and(matchBitmask(f.etc, etcMask));
-
-        return builder;
-    }
-
-    private BooleanExpression matchBitmask(NumberPath<Integer> field, Integer mask) {
-        return (mask != null && mask != 0)
-                ? Expressions.numberTemplate(Integer.class, "{0} & {1}", field, mask).ne(0)
-                : null;
     }
 
     @Override
@@ -110,29 +147,17 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         return Optional.ofNullable(result);
     }
 
-    @Override
-    public List<Templestay> searchByFiltersAndSearch(
-            int regionMask, int typeMask, int activityMask, int etcMask,
-            String sort, String search
-    ) {
-        QTemplestay t = QTemplestay.templestay;
-        QFilter f = QFilter.filter;
+    private BooleanBuilder buildFilterConditions(QFilter f, Integer regionMask, Integer typeMask, Integer activityMask, Integer etcMask) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(matchBitmask(f.region, regionMask));
+        builder.and(matchBitmask(f.type, typeMask));
+        builder.and(matchBitmask(f.activity, activityMask));
+        builder.and(matchBitmask(f.etc, etcMask));
+        return builder;
+    }
 
-        BooleanBuilder builder = buildFilterConditions(f, regionMask, typeMask, activityMask, etcMask);
-
-        if (search != null && !search.isBlank()) {
-            builder.and(
-                    t.templestayName.containsIgnoreCase(search)
-                            .or(t.templeName.containsIgnoreCase(search))
-                            .or(t.introduction.containsIgnoreCase(search))
-            );
-        }
-
-        return queryFactory
-                .selectFrom(t)
-                .join(t.filter, f)
-                .where(builder)
-                .orderBy(SortUtils.getTemplestaySort(sort, t))
-                .fetch();
+    private BooleanExpression matchBitmask(NumberPath<Integer> field, Integer mask) {
+        if (mask == null || mask == 0) return null;
+        return Expressions.booleanTemplate("({0} & {1}) != 0", field, mask);
     }
 }
