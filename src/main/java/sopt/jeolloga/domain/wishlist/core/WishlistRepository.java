@@ -11,4 +11,6 @@ import java.util.List;
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     @Query("SELECT w.templestay.id FROM Wishlist w WHERE w.member.id = :memberId")
     List<Long> findTemplestayIdsByMemberId(Long memberId);
+    boolean existsByMember_IdAndTemplestay_Id(Long memberId, Long templestayId);
+
 }

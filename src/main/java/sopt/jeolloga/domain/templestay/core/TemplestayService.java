@@ -30,7 +30,7 @@ import static sopt.jeolloga.util.FilterMaskUtil.decodeMask;
 @RequiredArgsConstructor
 public class TemplestayService {
 
-    private static final List<Long> RECOMMEND_TEMPLATESTAY_IDS = List.of(1L, 2L, 3L);
+    private static final List<Long> RECOMMEND_TEMPLATESTAY_IDS = List.of(34L, 35L, 36L);
 
     private final TemplestayRepository templestayRepository;
     private final ImageRepository imageRepository;
@@ -40,13 +40,9 @@ public class TemplestayService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public TemplestayRecommendListRes getRecommendTemplestays() {
+    public TemplestayRecommendListRes getRecommendTemplestays(Long userId) {
         List<TemplestayRecommendRes> results = IntStream.range(0, RECOMMEND_TEMPLATESTAY_IDS.size())
-                .mapToObj(i -> {
-                    Long id = RECOMMEND_TEMPLATESTAY_IDS.get(i);
-                    int rank = i + 1;
-                    return templestayRecommendMapper.toRecommendRes(id, rank);
-                })
+                .mapToObj(i -> templestayRecommendMapper.toRecommendRes(RECOMMEND_TEMPLATESTAY_IDS.get(i), i + 1, userId))
                 .flatMap(Optional::stream)
                 .toList();
 

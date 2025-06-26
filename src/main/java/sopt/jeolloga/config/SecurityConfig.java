@@ -34,13 +34,14 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v2/api/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
-                        .requestMatchers("/v2/auth/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/v2/user/**").authenticated()
-                        .requestMatchers("/user/**").authenticated()
-                        .anyRequest().authenticated())
+                        .requestMatchers(
+                                "/api/templestay",
+                                "/api/templestay/recommendation",
+                                "/api/templestay/details/**"
+                        ).permitAll()
+                        .requestMatchers("/api/user/**", "/v2/user/**").authenticated()
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

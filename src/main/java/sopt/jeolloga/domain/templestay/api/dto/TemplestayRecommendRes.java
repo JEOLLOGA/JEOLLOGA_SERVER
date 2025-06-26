@@ -6,6 +6,7 @@ public record TemplestayRecommendRes(
         String templestayName,
         String imgUrl,
         String region,
-        String templeName
+        String templeName,
+        boolean wish
 ) {
 }

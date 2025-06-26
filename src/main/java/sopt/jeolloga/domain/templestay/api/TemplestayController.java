@@ -27,9 +27,12 @@ public class TemplestayController {
     }
 
     @GetMapping("/recommendation")
-    public ResponseEntity<ApiResponse<?>> getRecommendTemplestay() {
-        TemplestayRecommendListRes templestayRecommendRes = templestayService.getRecommendTemplestays();
-        return ResponseEntity.ok(ApiResponse.success(templestayRecommendRes));
+    public ResponseEntity<ApiResponse<?>> getRecommendTemplestay(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long userId = (userDetails != null) ? userDetails.getUserId() : null;
+        TemplestayRecommendListRes response = templestayService.getRecommendTemplestays(userId);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/details/{id}")
