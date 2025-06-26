@@ -72,7 +72,7 @@ public class TemplestayService {
     }
 
     @Transactional
-    public TemplestayListRes getTemplestays(
+    public TemplestayPageRes getTemplestays(
             Set<Region> region,
             Set<Type> type,
             Set<Activity> activity,
@@ -81,7 +81,9 @@ public class TemplestayService {
             Integer max,
             String sort,
             String search,
-            CustomUserDetails user
+            CustomUserDetails user,
+            int page,
+            int size
     ) {
         int regionMask = FilterMaskUtil.combineMasks(region);
         int typeMask = FilterMaskUtil.combineMasks(type);
@@ -94,11 +96,16 @@ public class TemplestayService {
             );
         }
 
+        int offset = (Math.max(page, 1) - 1) * size;
+
         List<Object[]> rows = templestayRepository.fetchFilteredTemplestays(
                 regionMask, typeMask, activityMask, etcMask,
-                min, max,
-                (sort != null && !sort.isBlank()) ? sort : "default",
-                search
+                min, max, sort, search, offset, size
+        );
+
+        long totalCount = templestayRepository.countFilteredTemplestays(
+                regionMask, typeMask, activityMask, etcMask,
+                min, max, search
         );
 
         List<TemplestayFilterDto> result = rows.stream()
@@ -138,6 +145,6 @@ public class TemplestayService {
                 ))
                 .toList();
 
-        return new TemplestayListRes(responses);
+        return TemplestayPageRes.of(responses, page, size, totalCount);
     }
 }

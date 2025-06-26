@@ -10,10 +10,9 @@ import sopt.jeolloga.common.filter.Region;
 import sopt.jeolloga.common.filter.Type;
 import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
-import sopt.jeolloga.domain.templestay.api.dto.TemplestayListRes;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendListRes;
-import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendRes;
 import sopt.jeolloga.domain.templestay.core.TemplestayService;
+import sopt.jeolloga.domain.templestay.api.dto.TemplestayPageRes;
 
 import java.util.Set;
 
@@ -60,11 +59,13 @@ public class TemplestayController {
             @RequestParam(required = false) Integer min,
             @RequestParam(required = false) Integer max,
             @RequestParam(required = false) String sort,
-            @RequestParam(required = false) String search
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size
     ) {
-        TemplestayListRes templestayListRes = templestayService.getTemplestays(
-                region, type, activity, etc, min, max, sort, search, user
+        TemplestayPageRes result = templestayService.getTemplestays(
+                region, type, activity, etc, min, max, sort, search, user, page, size
         );
-        return ResponseEntity.ok(ApiResponse.success(templestayListRes));
+        return ResponseEntity.ok(ApiResponse.success(result));
     }
 }
