@@ -45,7 +45,7 @@ public class FilterMaskUtil {
 
     public static <E extends Enum<E> & BitMask> String decodeMask(int mask, Class<E> enumClass) {
         return Arrays.stream(enumClass.getEnumConstants())
-                .filter(e -> (mask & e.getBit()) == e.getBit())
+                .filter(e -> (mask & e.getMask()) == e.getMask())
                 .map(BitMask::getLabel)
                 .collect(Collectors.joining(","));
     }
