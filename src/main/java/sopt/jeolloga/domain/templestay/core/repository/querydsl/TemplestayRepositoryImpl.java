@@ -35,36 +35,42 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
             Integer regionMask, Integer typeMask, Integer activityMask, Integer etcMask,
             Integer minPrice, Integer maxPrice, String sort, String search
     ) {
+        String orderByClause = switch (sort) {
+            case "price" -> " ORDER BY f.price ASC, t.id ASC ";
+            case "view" -> " ORDER BY t.view DESC, t.id ASC ";
+            default -> "";
+        };
+
         String sql = """
-        SELECT 
-            t.id AS templestayId,
-            t.temple_name AS templeName,
-            t.organized_name AS templestayName,
-            f.region,
-            f.type,
-            COALESCE(w.wish_count, 0) AS wishCount
-        FROM templestay t
-        JOIN filter f ON f.templestay_id = t.id
-        LEFT JOIN (
-            SELECT templestay_id, COUNT(*) AS wish_count
-            FROM wishlist
-            GROUP BY templestay_id
-        ) w ON w.templestay_id = t.id
-        WHERE (:regionMask = 0 OR (f.region & :regionMask) != 0)
-          AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
-          AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)
-          AND (:etcMask = 0 OR (f.etc & :etcMask) != 0)
-          AND (:minPrice IS NULL OR f.price >= :minPrice)
-          AND (:maxPrice IS NULL OR f.price <= :maxPrice)
-          AND (:search IS NULL OR :search = ''
-              OR LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
-              OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
-              OR LOWER(t.introduction) LIKE CONCAT('%', LOWER(:search), '%'))
-        ORDER BY
-            CASE WHEN :sort = 'wish_desc' THEN w.wish_count END DESC,
-            CASE WHEN :sort = 'price_asc' THEN f.price END ASC,
-            t.id ASC
-        """;
+            SELECT 
+                t.id AS templestayId,
+                t.temple_name AS templeName,
+                t.organized_name AS templestayName,
+                f.region,
+                f.type,
+                COALESCE(w.wish_count, 0) AS wishCount
+            FROM templestay t
+            JOIN filter f ON f.templestay_id = t.id
+            LEFT JOIN (
+                SELECT templestay_id, COUNT(*) AS wish_count
+                FROM wishlist
+                GROUP BY templestay_id
+            ) w ON w.templestay_id = t.id
+            WHERE (:regionMask = 0 OR (f.region & :regionMask) != 0)
+              AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
+              AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)
+              AND (:etcMask = 0 OR (f.etc & :etcMask) != 0)
+              AND (:minPrice IS NULL OR f.price >= :minPrice)
+              AND (:maxPrice IS NULL OR f.price <= :maxPrice)
+              AND (
+                :search IS NULL OR :search = ''
+                OR (
+                    LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
+                    OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
+                    OR LOWER(t.introduction) LIKE CONCAT('%', LOWER(:search), '%')
+                )
+              )
+        """ + orderByClause;
 
         Query nativeQuery = em.createNativeQuery(sql)
                 .setParameter("regionMask", regionMask != null ? regionMask : 0)
@@ -73,12 +79,12 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
                 .setParameter("etcMask", etcMask != null ? etcMask : 0)
                 .setParameter("minPrice", minPrice)
                 .setParameter("maxPrice", maxPrice)
-                .setParameter("sort", sort != null ? sort : "default")
                 .setParameter("search", search != null ? search : "");
 
+        @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
 
-        if ("random".equalsIgnoreCase(sort)) {
+        if (sort == null || sort.isBlank() || "recommend".equalsIgnoreCase(sort)) {
             Collections.shuffle(resultList);
         }
 
