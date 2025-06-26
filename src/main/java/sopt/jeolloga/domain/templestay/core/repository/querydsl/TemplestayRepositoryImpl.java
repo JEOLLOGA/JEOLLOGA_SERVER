@@ -14,6 +14,7 @@ import sopt.jeolloga.domain.templestay.Templestay;
 import sopt.jeolloga.domain.filter.QFilter;
 import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
 import sopt.jeolloga.domain.templestay.core.repository.querydsl.TemplestayCustomRepository;
+import sopt.jeolloga.util.SortUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -107,5 +108,31 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<Templestay> searchByFiltersAndSearch(
+            int regionMask, int typeMask, int activityMask, int etcMask,
+            String sort, String search
+    ) {
+        QTemplestay t = QTemplestay.templestay;
+        QFilter f = QFilter.filter;
+
+        BooleanBuilder builder = buildFilterConditions(f, regionMask, typeMask, activityMask, etcMask);
+
+        if (search != null && !search.isBlank()) {
+            builder.and(
+                    t.templestayName.containsIgnoreCase(search)
+                            .or(t.templeName.containsIgnoreCase(search))
+                            .or(t.introduction.containsIgnoreCase(search))
+            );
+        }
+
+        return queryFactory
+                .selectFrom(t)
+                .join(t.filter, f)
+                .where(builder)
+                .orderBy(SortUtils.getTemplestaySort(sort, t))
+                .fetch();
     }
 }
