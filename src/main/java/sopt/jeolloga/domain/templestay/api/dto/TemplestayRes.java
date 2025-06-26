@@ -3,7 +3,7 @@ package sopt.jeolloga.domain.templestay.api.dto;
 public record TemplestayRes(
         Long templestayId,
         String templeName,
-        String TemplestayName,
+        String templestayName,
         String region,
         String type,
         String imgUrl,
