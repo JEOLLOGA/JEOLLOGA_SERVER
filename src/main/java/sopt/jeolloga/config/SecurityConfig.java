@@ -35,9 +35,23 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/auth/login",
+                                "/auth/reissue",
+                                "/user/auth/logout",
+                                "/user/auth/unlink",
+
+                                "/v2/auth/login",
+                                "/v2/auth/reissue",
+                                "/v2/user/auth/logout",
+                                "/v2/user/auth/unlink",
+
                                 "/api/templestay",
                                 "/api/templestay/recommendation",
-                                "/api/templestay/details/**"
+                                "/api/templestay/details/**",
+
+                                "/v2/api/templestay",
+                                "/v2/api/templestay/recommendation",
+                                "/v2/api/templestay/details/**"
                         ).permitAll()
                         .requestMatchers("/api/user/**", "/v2/user/**").authenticated()
                         .anyRequest().authenticated()
