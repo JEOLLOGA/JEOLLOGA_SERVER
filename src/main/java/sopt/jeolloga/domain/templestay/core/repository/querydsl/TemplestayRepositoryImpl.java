@@ -95,10 +95,6 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
 
-        if ("recommend".equalsIgnoreCase(sort)) {
-            Collections.shuffle(resultList);
-        }
-
         return resultList;
     }
 
