@@ -1,12 +1,14 @@
 package sopt.jeolloga.domain.auth.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import sopt.jeolloga.exception.CustomAuthenticationEntryPoint;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -31,13 +33,18 @@ public class JwtTokenGenerator {
     }
 
     public Long extractUserId(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(jwtProperties.secret().getBytes(StandardCharsets.UTF_8))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(jwtProperties.secret().getBytes(StandardCharsets.UTF_8))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-        return Long.parseLong(claims.getSubject());
+            return Long.parseLong(claims.getSubject());
+
+        } catch (JwtException ex) {
+            throw ex;
+        }
     }
 
     public String generateRefreshToken(Long userId) {
