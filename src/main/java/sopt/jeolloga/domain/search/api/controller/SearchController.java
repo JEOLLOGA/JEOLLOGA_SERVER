@@ -24,7 +24,7 @@ public class SearchController {
         this.jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    @GetMapping("search-list")
+    @GetMapping("/search-list")
     public ResponseEntity<ApiResponse<?>> getSearch(
         HttpServletRequest request
     ) {
