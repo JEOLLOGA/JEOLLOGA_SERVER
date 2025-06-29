@@ -8,8 +8,8 @@ import sopt.jeolloga.common.filter.*;
 import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.image.core.ImageRepository;
 import sopt.jeolloga.domain.member.core.MemberRepository;
-import sopt.jeolloga.domain.search.Search;
 import sopt.jeolloga.domain.search.core.SearchRepository;
+import sopt.jeolloga.domain.search.core.SearchService;
 import sopt.jeolloga.domain.templestay.Templestay;
 import sopt.jeolloga.domain.templestay.api.dto.*;
 import sopt.jeolloga.domain.templestay.core.repository.TemplestayRepository;
@@ -36,9 +36,8 @@ public class TemplestayService {
     private final TemplestayRepository templestayRepository;
     private final ImageRepository imageRepository;
     private final TemplestayRecommendMapper templestayRecommendMapper;
-    private final SearchRepository searchRepository;
+    private final SearchService searchService;
     private final WishlistRepository wishlistRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public TemplestayRecommendListRes getRecommendTemplestays(Long userId) {
@@ -91,9 +90,7 @@ public class TemplestayService {
         int etcMask = FilterMaskUtil.combineMasks(etc);
 
         if (user != null && search != null && !search.isBlank()) {
-            memberRepository.findById(user.getUserId()).ifPresent(member ->
-                    searchRepository.save(new Search(member, search))
-            );
+            searchService.saveSearch(user.getUserId(), search);
         }
 
         int offset = (Math.max(page, 1) - 1) * size;
