@@ -50,4 +50,9 @@ public class SearchService {
 
         searchRepository.delete(search);
     }
+
+    @Transactional
+    public void deleteAllSearch(Long userId) {
+        searchRepository.deleteByMember_Id(userId);
+    }
 }

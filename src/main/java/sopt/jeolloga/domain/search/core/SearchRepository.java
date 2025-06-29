@@ -34,4 +34,6 @@ public interface SearchRepository extends JpaRepository<Search, Long> {
     void deleteOldSearchesBeyondLimit(@Param("member") Member member, @Param("limit") int limit);
 
     Optional<Search> findByIdAndMember_Id(Long id, Long memberId);
+
+    void deleteByMember_Id(Long memberId);
 }
