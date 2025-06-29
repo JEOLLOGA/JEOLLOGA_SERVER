@@ -98,10 +98,24 @@ public class TemplestayService {
 
         int offset = (Math.max(page, 1) - 1) * size;
 
+        boolean isEmptyParam = (region == null || region.isEmpty())
+                && (type == null || type.isEmpty())
+                && (activity == null || activity.isEmpty())
+                && (etc == null || etc.isEmpty())
+                && min == null
+                && max == null
+                && (search == null || search.isBlank());
+
+        String effectiveSort = (sort == null || sort.isBlank()) ? "recommend" : sort;
+
         List<Object[]> rows = templestayRepository.fetchFilteredTemplestays(
                 regionMask, typeMask, activityMask, etcMask,
-                min, max, sort, search, offset, size
+                min, max, effectiveSort, search, offset, size
         );
+
+        if (effectiveSort.equalsIgnoreCase("recommend") && isEmptyParam) {
+            Collections.shuffle(rows);
+        }
 
         long totalCount = templestayRepository.countFilteredTemplestays(
                 regionMask, typeMask, activityMask, etcMask,
