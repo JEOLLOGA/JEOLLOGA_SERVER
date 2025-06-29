@@ -53,7 +53,7 @@ public class SecurityConfig {
                                 "/v2/api/templestay/recommendation",
                                 "/v2/api/templestay/details/**"
                         ).permitAll()
-                        .requestMatchers("/api/user/**", "/v2/user/**").authenticated()
+                        .requestMatchers("/user/**", "/v2/user/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
