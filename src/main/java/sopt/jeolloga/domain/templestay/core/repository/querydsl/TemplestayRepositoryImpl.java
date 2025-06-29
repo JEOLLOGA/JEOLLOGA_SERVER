@@ -44,7 +44,7 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         String orderByClause = switch (sort) {
             case "price" -> " ORDER BY f.price ASC, t.id ASC ";
             case "view" -> " ORDER BY t.view DESC, t.id ASC ";
-            case "recommend" -> "";
+            case "recommend" -> " ORDER BY (t.view + COALESCE(w.wish_count, 0) * 2) DESC, t.id ASC ";
             default -> "";
         };
 
