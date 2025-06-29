@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
-import sopt.jeolloga.domain.auth.kakao.RedirectUriResolver;
+import sopt.jeolloga.exception.JwtAuthenticationException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,11 @@ public class JwtCookieProvider {
     private static final String KAKAO_TOKEN_NAME = "kakaoAccessToken";
 
     public String extractAccessToken(HttpServletRequest request) {
-        return extractCookie(request, ACCESS_TOKEN_NAME);
+        String token = extractCookie(request, ACCESS_TOKEN_NAME);
+        if (token == null || token.isBlank()) {
+            throw new JwtAuthenticationException("Access Token 누락");
+        }
+        return token;
     }
 
     public String extractRefreshToken(HttpServletRequest request) {

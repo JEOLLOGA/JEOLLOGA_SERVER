@@ -13,6 +13,7 @@ public enum ErrorCode {
     // 401 UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
     UNAUTHORIZED_HEADER(HttpStatus.UNAUTHORIZED, "요청 헤더가 올바르지 않는 토큰입니다."),
+    INVALID_JWT(HttpStatus.UNAUTHORIZED, "유효하지 않은 JWT입니다."),
 
     // 403 FORBIDDEN
     FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
