@@ -25,7 +25,7 @@ public class SearchController {
 
     @GetMapping("/search-list")
     public ResponseEntity<ApiResponse<?>> getSearch(
-        HttpServletRequest request
+            HttpServletRequest request
     ) {
         String accessToken = jwtCookieProvider.extractAccessToken(request);
         Long userId = jwtTokenGenerator.extractUserId(accessToken);
@@ -43,6 +43,17 @@ public class SearchController {
         Long userId = jwtTokenGenerator.extractUserId(accessToken);
 
         searchService.deleteSearch(userId, id);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @DeleteMapping("/search")
+    public ResponseEntity<ApiResponse<?>> deleteAllSearch(
+            HttpServletRequest request
+    ) {
+        String accessToken = jwtCookieProvider.extractAccessToken(request);
+        Long userId = jwtTokenGenerator.extractUserId(accessToken);
+
+        searchService.deleteAllSearch(userId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
