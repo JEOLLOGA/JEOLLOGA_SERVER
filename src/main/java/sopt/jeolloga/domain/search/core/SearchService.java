@@ -42,4 +42,12 @@ public class SearchService {
 
         return new SearchListRes(list);
     }
+
+    @Transactional
+    public void deleteSearch(Long userId, Long id) {
+        Search search = searchRepository.findByIdAndMember_Id(id, userId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.SEARCH_NOT_FOUND));
+
+        searchRepository.delete(search);
+    }
 }

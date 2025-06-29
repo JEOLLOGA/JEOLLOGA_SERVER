@@ -1,10 +1,9 @@
 package sopt.jeolloga.domain.search.api.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
 import sopt.jeolloga.domain.auth.jwt.JwtCookieProvider;
 import sopt.jeolloga.domain.auth.jwt.JwtTokenGenerator;
@@ -34,5 +33,16 @@ public class SearchController {
         SearchListRes response = searchService.getSearch(userId);
 
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @DeleteMapping("/search/{id}")
+    public ResponseEntity<ApiResponse<?>> deleteSearch(
+            HttpServletRequest request,
+            @Valid @PathVariable Long id) {
+        String accessToken = jwtCookieProvider.extractAccessToken(request);
+        Long userId = jwtTokenGenerator.extractUserId(accessToken);
+
+        searchService.deleteSearch(userId, id);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

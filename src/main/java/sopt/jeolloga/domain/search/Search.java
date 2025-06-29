@@ -14,7 +14,7 @@ public class Search {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Column
@@ -27,6 +27,10 @@ public class Search {
 
     protected Search() {
 
+    }
+
+    public boolean isOwnedBy(Long userId) {
+        return this.member != null && this.member.getId().equals(userId);
     }
 }
 
