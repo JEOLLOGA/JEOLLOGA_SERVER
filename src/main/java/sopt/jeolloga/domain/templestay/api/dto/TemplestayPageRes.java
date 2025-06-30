@@ -9,10 +9,20 @@ public record TemplestayPageRes(
         int totalPages,
         boolean last,
         List<TemplestayRes> content
-        ) {
+) {
     public static TemplestayPageRes of(List<TemplestayRes> content, int page, int size, long totalElements) {
         int totalPages = (int) Math.ceil((double) totalElements / size);
-        boolean last = page >= totalPages;
-        return new TemplestayPageRes(page, size, totalElements, totalPages, last, content);
+
+        int safePage = Math.max(page, 1);
+        boolean last = totalPages == 0 || safePage >= totalPages;
+
+        return new TemplestayPageRes(
+                safePage,
+                size,
+                totalElements,
+                totalPages,
+                last,
+                content != null ? content : List.of()
+        );
     }
 }
