@@ -41,4 +41,18 @@ public class WishlistService {
             wishlistRepository.save(wishlist);
         }
     }
+
+    @Transactional
+    public void deleteWishlist(Long userId, Long templestayId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
+
+        Templestay templestay = templestayRepository.findById(templestayId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY));
+
+        Wishlist wishlist = wishlistRepository.findByMemberAndTemplestay(member, templestay)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_WISHLIST));
+
+        wishlistRepository.delete(wishlist);
+    }
 }
