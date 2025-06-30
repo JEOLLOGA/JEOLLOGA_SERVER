@@ -1,6 +1,7 @@
 package sopt.jeolloga.domain.wishlist;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import sopt.jeolloga.domain.member.Member;
 import sopt.jeolloga.domain.templestay.Templestay;
@@ -25,6 +26,7 @@ public class Wishlist {
 
     }
 
+    @Builder
     public Wishlist(Member member, Templestay templestay) {
         this.member = member;
         this.templestay = templestay;
