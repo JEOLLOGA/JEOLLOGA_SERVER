@@ -12,7 +12,18 @@ public record WishlistPageRes(
 ) {
     public static WishlistPageRes of(List<WishlistRes> content, int page, int size, long totalElements) {
         int totalPages = (int) Math.ceil((double) totalElements / size);
-        boolean last = page >= totalPages;
-        return new WishlistPageRes(page, size, totalElements, totalPages, last, content);
+
+        int safePage = Math.max(page, 1);
+
+        boolean last = totalPages == 0 || safePage >= totalPages;
+
+        return new WishlistPageRes(
+                safePage,
+                size,
+                totalElements,
+                totalPages,
+                last,
+                content != null ? content : List.of()
+        );
     }
 }
