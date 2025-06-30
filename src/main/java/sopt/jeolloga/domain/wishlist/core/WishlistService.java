@@ -8,9 +8,13 @@ import sopt.jeolloga.domain.member.core.MemberRepository;
 import sopt.jeolloga.domain.templestay.Templestay;
 import sopt.jeolloga.domain.templestay.core.repository.TemplestayRepository;
 import sopt.jeolloga.domain.wishlist.Wishlist;
+import sopt.jeolloga.domain.wishlist.api.dto.WishlistPageRes;
+import sopt.jeolloga.domain.wishlist.api.dto.WishlistRes;
+import sopt.jeolloga.domain.wishlist.core.querydsl.WishlistCustomRepository;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class WishlistService {
     private final MemberRepository memberRepository;
     private final TemplestayRepository templestayRepository;
     private final WishlistRepository wishlistRepository;
+    private final WishlistCustomRepository wishlistCustomRepository;
 
     @Transactional
     public void updateWishlist(Long userId, Long templestayId) {
@@ -54,5 +59,14 @@ public class WishlistService {
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_WISHLIST));
 
         wishlistRepository.delete(wishlist);
+    }
+
+    public WishlistPageRes getWishlist(Long userId, int page, int size) {
+        int offset = (page - 1) * size;
+
+        List<WishlistRes> content = wishlistCustomRepository.findWishlistContent(userId, offset, size);
+        long total = wishlistCustomRepository.countWishlist(userId);
+
+        return WishlistPageRes.of(content, page, size, total);
     }
 }
