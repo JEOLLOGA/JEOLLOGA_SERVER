@@ -4,9 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import sopt.jeolloga.domain.wishlist.api.dto.WishlistRes;
 
@@ -14,7 +11,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class WishlistNativeRepositoryImpl implements WishlistCustomRepository {
+public class WishlistCustomRepositoryImpl implements WishlistCustomRepository {
 
     @PersistenceContext
     private final EntityManager em;
