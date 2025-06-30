@@ -18,7 +18,8 @@ public enum BusinessErrorCode {
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "해당 유저가 존재하지 않습니다."),
     NOT_FOUND_FILTER(HttpStatus.NOT_FOUND, "필터 정보가 존재하지 않습니다."),
     NOT_FOUND_ORGANIZEDNAME(HttpStatus.NOT_FOUND, "템플스테이명이 수정되지 않았습니다."),
-    SEARCH_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지않는 검색어입니다.");
+    NOT_FOUND_SEARCH(HttpStatus.NOT_FOUND, "존재하지않는 검색어입니다."),
+    NOT_FOUND_WISHLIST(HttpStatus.NOT_FOUND, "존재하지않는 검색어입니다.");;
 
     private final HttpStatus status;
     private final int code;

@@ -46,7 +46,7 @@ public class SearchService {
     @Transactional
     public void deleteSearch(Long userId, Long id) {
         Search search = searchRepository.findByIdAndMember_Id(id, userId)
-                .orElseThrow(() -> new BusinessException(BusinessErrorCode.SEARCH_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_SEARCH));
 
         searchRepository.delete(search);
     }
