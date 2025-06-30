@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
 import sopt.jeolloga.domain.auth.jwt.JwtCookieProvider;
 import sopt.jeolloga.domain.auth.jwt.JwtTokenGenerator;
+import sopt.jeolloga.domain.wishlist.api.dto.WishlistPageRes;
 import sopt.jeolloga.domain.wishlist.core.WishlistService;
 
 @RestController
@@ -43,5 +44,18 @@ public class WishlistController {
 
         wishlistService.deleteWishlist(userId, id);
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @GetMapping("/wish")
+    public ResponseEntity<ApiResponse<?>> getWishlist(
+            HttpServletRequest request,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        String accessToken = jwtCookieProvider.extractAccessToken(request);
+        Long userId = jwtTokenGenerator.extractUserId(accessToken);
+
+        WishlistPageRes response = wishlistService.getWishlist(userId, page, size);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
