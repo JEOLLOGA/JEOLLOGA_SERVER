@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import sopt.jeolloga.domain.wishlist.api.dto.WishlistRes;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class WishlistCustomRepositoryImpl implements WishlistCustomRepository {
 
     @PersistenceContext
-    private final EntityManager em;
+    private EntityManager em;
 
     @Override
     public List<WishlistRes> findWishlistContent(Long userId, int offset, int limit) {
