@@ -37,9 +37,9 @@ public class JwtCookieProvider {
 
     public List<ResponseCookie> createAllCookies(LoginResult result, HttpServletRequest request) {
         return List.of(
-                createCookie(ACCESS_TOKEN_NAME, result.accessToken(), (int) jwtProperties.accessExpiration(), request),
-                createCookie(REFRESH_TOKEN_NAME, result.refreshToken(), (int) jwtProperties.refreshExpiration(), request),
-                createCookie(KAKAO_TOKEN_NAME, result.kakaoAccessToken(), (int) jwtProperties.kakaoExpiration(), request)
+                createCookie(ACCESS_TOKEN_NAME, result.accessToken(), jwtProperties.accessExpiration(), request),
+                createCookie(REFRESH_TOKEN_NAME, result.refreshToken(), jwtProperties.refreshExpiration(), request),
+                createCookie(KAKAO_TOKEN_NAME, result.kakaoAccessToken(), jwtProperties.kakaoExpiration(), request)
         );
     }
 
@@ -53,13 +53,13 @@ public class JwtCookieProvider {
 
     public List<ResponseCookie> recreateAccessAndRefreshCookies(LoginResult result, HttpServletRequest request) {
         return List.of(
-                createCookie(ACCESS_TOKEN_NAME, result.accessToken(), (int) jwtProperties.accessExpiration(), request),
-                createCookie(REFRESH_TOKEN_NAME, result.refreshToken(), (int) jwtProperties.refreshExpiration(), request)
+                createCookie(ACCESS_TOKEN_NAME, result.accessToken(), jwtProperties.accessExpiration(), request),
+                createCookie(REFRESH_TOKEN_NAME, result.refreshToken(), jwtProperties.refreshExpiration(), request)
         );
     }
 
     //http로 개발 및 테스트 중일땨는 secure false로 추후 메인배포에서는 true값으로 변경
-    private ResponseCookie createCookie(String name, String value, int maxAge, HttpServletRequest request) {
+    private ResponseCookie createCookie(String name, String value, long maxAge, HttpServletRequest request) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(true)
