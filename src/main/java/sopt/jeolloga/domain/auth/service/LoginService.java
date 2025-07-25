@@ -15,6 +15,7 @@ import sopt.jeolloga.domain.member.Member;
 import sopt.jeolloga.domain.member.core.MemberRepository;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
+import feign.FeignException;
 
 @Service
 @RequiredArgsConstructor
@@ -58,15 +59,24 @@ public class LoginService {
     }
 
     public void unlinkFromKakao(String kakaoAccessToken) {
-        Long kakaoUserId = oauthClientApi.unlink(kakaoAccessToken);
-        if (kakaoUserId == null) {
+        try {
+            Long kakaoUserId = oauthClientApi.unlink(kakaoAccessToken);
+
+            if (kakaoUserId == null) {
+                throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
+            }
+
+            Member member = memberRepository.findByKakaoUserId(kakaoUserId)
+                    .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
+
+            tokenService.delete(member.getId());
+            memberRepository.delete(member);
+
+        } catch (FeignException.Unauthorized e) {
+            throw new BusinessException(BusinessErrorCode.INVALID_KAKAO_TOKEN);
+        } catch (FeignException e) {
             throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
         }
-
-        Member member = memberRepository.findByKakaoUserId(kakaoUserId)
-                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
-
-        tokenService.delete(member.getId());
-        memberRepository.delete(member);
     }
+
 }

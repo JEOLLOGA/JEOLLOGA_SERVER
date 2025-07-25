@@ -12,6 +12,7 @@ public enum BusinessErrorCode {
     KAKAO_UNAUTHORIZED_REFRESHTOKEN(HttpStatus.UNAUTHORIZED, "RefreshToken 검증 실패"),
     INVALID_SERVER_JWT(HttpStatus.UNAUTHORIZED, "유효하지 않은 JWT입니다."),
     EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "만료된 JWT입니다."),
+    INVALID_KAKAO_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Kakao 토큰입니다."),
 
     // 404 NOT FOUND
     NOT_FOUND_TEMPLESTAY(HttpStatus.NOT_FOUND, "존재하지 않는 템플스테이 입니다."),

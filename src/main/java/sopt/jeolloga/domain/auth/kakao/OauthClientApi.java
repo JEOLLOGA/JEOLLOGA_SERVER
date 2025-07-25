@@ -77,17 +77,31 @@ public class OauthClientApi {
                         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
                     })
                     .retrieve()
-                    .onStatus(HttpStatusCode::isError, response ->
+                    .onStatus(HttpStatusCode::is4xxClientError, response -> {
+                        if (response.statusCode().value() == 401) {
+                            return response.bodyToMono(String.class).flatMap(errorBody -> {
+                                log.warn("Kakao Unlink 401 Unauthorized - Token: {}, 응답: {}",
+                                        kakaoAccessToken, errorBody);
+                                return Mono.error(new BusinessException(BusinessErrorCode.INVALID_KAKAO_TOKEN));
+                            });
+                        }
+                        return response.bodyToMono(String.class).flatMap(errorBody -> {
+                            log.error("Kakao Unlink 4xx Error - 상태: {}, 응답: {}, Token: {}",
+                                    response.statusCode(), errorBody, kakaoAccessToken);
+                            return Mono.error(new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR));
+                        });
+                    })
+                    .onStatus(HttpStatusCode::is5xxServerError, response ->
                             response.bodyToMono(String.class).flatMap(errorBody -> {
-                                log.error("카카오 연결 끊기 실패 - 응답: {}", errorBody);
+                                log.error("Kakao Unlink 5xx Error - 응답: {}, Token: {}", errorBody, kakaoAccessToken);
                                 return Mono.error(new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR));
                             })
                     )
                     .bodyToMono(KaKaoUnlinkRes.class)
-                    .block()
-                    .id();
+                    .map(KaKaoUnlinkRes::id)
+                    .block();
         } catch (Exception e) {
-            log.error("카카오 연결 끊기 중 예외 발생", e);
+            log.error("Kakao Unlink 예외 발생 - Token: {}, 메시지: {}", kakaoAccessToken, e.getMessage(), e);
             throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
         }
     }
