@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.templestay.api.dto;
+package sopt.jeolloga.domain.templestay.api.dto.res;
 
 public record TemplestayDetailsRes(
         Long id,

@@ -9,10 +9,10 @@ import sopt.jeolloga.common.filter.EtcOption;
 import sopt.jeolloga.common.filter.Region;
 import sopt.jeolloga.common.filter.Type;
 import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
-import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
-import sopt.jeolloga.domain.templestay.api.dto.TemplestayRecommendListRes;
+import sopt.jeolloga.domain.templestay.api.dto.res.TemplestayDetailsRes;
+import sopt.jeolloga.domain.templestay.api.dto.res.TemplestayRecommendListRes;
 import sopt.jeolloga.domain.templestay.core.TemplestayService;
-import sopt.jeolloga.domain.templestay.api.dto.TemplestayPageRes;
+import sopt.jeolloga.domain.templestay.api.dto.res.TemplestayPageRes;
 
 import java.util.Set;
 
