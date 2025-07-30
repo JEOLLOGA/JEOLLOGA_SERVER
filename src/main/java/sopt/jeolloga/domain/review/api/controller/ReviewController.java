@@ -10,12 +10,22 @@ import sopt.jeolloga.domain.review.core.service.ReviewService;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/templestay")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/api/templestay/reviews/fetch-and-save")
+    @PostMapping("/reviews/fetch-and-save")
     public ResponseEntity<ApiResponse<?>> saveTempleReviews(@RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok(reviewService.saveTempleReviews(page));
+    }
+
+    @GetMapping("/reviews")
+    public ResponseEntity<ApiResponse<?>> getReviews(
+            @RequestParam Long templestayId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(reviewService.getReviews(templestayId, page, pageSize)));
     }
 }
