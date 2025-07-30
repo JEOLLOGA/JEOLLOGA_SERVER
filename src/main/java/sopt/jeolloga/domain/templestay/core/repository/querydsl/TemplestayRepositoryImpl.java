@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import sopt.jeolloga.domain.filter.QFilter;
 import sopt.jeolloga.domain.templestay.QTemplestay;
 import sopt.jeolloga.domain.templestay.Templestay;
-import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
+import sopt.jeolloga.domain.templestay.api.dto.res.TemplestayDetailsRes;
 
 import java.util.Collections;
 import java.util.List;

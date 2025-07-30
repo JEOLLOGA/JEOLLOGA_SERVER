@@ -1,7 +1,7 @@
 package sopt.jeolloga.domain.templestay.mapper;
 
 import sopt.jeolloga.domain.templestay.Templestay;
-import sopt.jeolloga.domain.templestay.api.dto.TemplestayDetailsRes;
+import sopt.jeolloga.domain.templestay.api.dto.res.TemplestayDetailsRes;
 
 import java.util.Optional;
 
