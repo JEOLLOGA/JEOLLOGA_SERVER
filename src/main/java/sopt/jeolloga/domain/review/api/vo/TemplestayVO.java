@@ -1,6 +1,6 @@
-package sopt.jeolloga.domain.review;
+package sopt.jeolloga.domain.review.api.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import sopt.jeolloga.domain.review.core.Review;
 
 public record TemplestayVO(
         String title,

@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.review;
+package sopt.jeolloga.domain.review.api.vo;
 
 import java.util.List;
 
