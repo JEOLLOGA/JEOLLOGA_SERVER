@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.jeolloga.common.dto.ApiResponse;
+import sopt.jeolloga.domain.review.api.dto.ReviewPageRes;
 import sopt.jeolloga.domain.review.api.vo.TemplestayVO;
 import sopt.jeolloga.domain.review.core.Review;
 import sopt.jeolloga.domain.review.core.repository.ReviewRepository;
-import sopt.jeolloga.domain.review.core.service.NaverBlogClient;
 import sopt.jeolloga.domain.templestay.core.repository.TemplestayRepository;
+import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
 
 import java.util.List;
@@ -66,5 +67,15 @@ public class ReviewService {
         }
 
         return ApiResponse.success("temple 리뷰 처리 완료".formatted(start + 1, end));
+    }
+
+    public ReviewPageRes getReviews(Long templestayId, int page, int pageSize) {
+        String templeName = templestayRepository.findTempleNameById(templestayId);
+
+        if (templeName == null) {
+            throw new BusinessException(BusinessErrorCode.NOT_FOUND_TEMPLESTAY);
+        }
+
+        return reviewRepository.findReviewsByTempleName(templeName, page, pageSize);
     }
 }
