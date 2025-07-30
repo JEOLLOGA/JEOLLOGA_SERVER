@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.review;
+package sopt.jeolloga.domain.review.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sopt.jeolloga.common.dto.ApiResponse;
+import sopt.jeolloga.domain.review.core.service.ReviewService;
 
 @RestController
 @RequiredArgsConstructor

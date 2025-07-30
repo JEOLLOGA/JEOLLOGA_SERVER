@@ -1,4 +1,4 @@
-package sopt.jeolloga.domain.review;
+package sopt.jeolloga.domain.review.core.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,15 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import sopt.jeolloga.domain.review.api.vo.NaverResultVO;
+import sopt.jeolloga.domain.review.api.vo.TemplestayVO;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
-import sopt.jeolloga.exception.ErrorCode;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component

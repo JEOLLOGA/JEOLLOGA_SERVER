@@ -1,10 +1,14 @@
-package sopt.jeolloga.domain.review;
+package sopt.jeolloga.domain.review.core.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.jeolloga.common.dto.ApiResponse;
+import sopt.jeolloga.domain.review.api.vo.TemplestayVO;
+import sopt.jeolloga.domain.review.core.Review;
+import sopt.jeolloga.domain.review.core.repository.ReviewRepository;
+import sopt.jeolloga.domain.review.core.service.NaverBlogClient;
 import sopt.jeolloga.domain.templestay.core.repository.TemplestayRepository;
 import sopt.jeolloga.exception.BusinessException;
 
