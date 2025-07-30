@@ -6,9 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import sopt.jeolloga.domain.review.QReview;
+import sopt.jeolloga.domain.review.core.QReview;
 import sopt.jeolloga.domain.review.core.Review;
-import sopt.jeolloga.domain.review.core.repository.querydsl.ReviewCustomRepository;
 
 import java.util.List;
 
