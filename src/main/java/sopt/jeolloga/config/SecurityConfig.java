@@ -45,13 +45,9 @@ public class SecurityConfig {
                                 "/v2/user/auth/logout",
                                 "/v2/user/auth/unlink",
 
-                                "/api/templestay",
-                                "/api/templestay/recommendation",
-                                "/api/templestay/details/**",
+                                "/api/templestay/**",
 
-                                "/v2/api/templestay",
-                                "/v2/api/templestay/recommendation",
-                                "/v2/api/templestay/details/**"
+                                "/v2/api/templestay/**"
                         ).permitAll()
                         .requestMatchers("/user/**", "/v2/user/**").authenticated()
                         .anyRequest().authenticated()
