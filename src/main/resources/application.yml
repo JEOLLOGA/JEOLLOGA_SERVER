@@ -48,3 +48,8 @@ jwt:
   access-expiration: ${JWT_ACCESS_EXPIRATION}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION}
   kakao-expiration: ${JWT_KAKAO_EXPIRATION}
+
+naver:
+  api:
+    client-id: ${NAVER_API_CLIENT_ID}
+    client-secret: ${NAVER_API_CLIENT_SECRET}
