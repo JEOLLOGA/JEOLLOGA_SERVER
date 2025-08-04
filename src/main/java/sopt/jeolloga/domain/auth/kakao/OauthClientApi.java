@@ -68,7 +68,19 @@ public class OauthClientApi {
         }
     }
 
-    public Long unlink(String kakaoAccessToken) {
+    public Long safeUnlink(String kakaoAccessToken) {
+        try {
+            return unlinkInternal(kakaoAccessToken);
+        } catch (BusinessException e) {
+            if (e.getBusinessErrorCode() == BusinessErrorCode.INVALID_KAKAO_TOKEN) {
+                log.warn("이미 만료된 Kakao 토큰으로 unlink 요청 → 무시하고 회원 탈퇴만 진행");
+                return null;
+            }
+            throw e;
+        }
+    }
+
+    private Long unlinkInternal(String kakaoAccessToken) {
         try {
             return kakaoApiClient.post()
                     .uri("/v1/user/unlink")
@@ -100,6 +112,8 @@ public class OauthClientApi {
                     .bodyToMono(KaKaoUnlinkRes.class)
                     .map(KaKaoUnlinkRes::id)
                     .block();
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
             log.error("Kakao Unlink 예외 발생 - Token: {}, 메시지: {}", kakaoAccessToken, e.getMessage(), e);
             throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);

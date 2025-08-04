@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sopt.jeolloga.domain.auth.dto.LoginCommand;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
 import sopt.jeolloga.domain.auth.jwt.JwtTokenGenerator;
@@ -58,25 +59,22 @@ public class LoginService {
                 member.getNickname());
     }
 
+    @Transactional
     public void unlinkFromKakao(String kakaoAccessToken) {
-        try {
-            Long kakaoUserId = oauthClientApi.unlink(kakaoAccessToken);
+        Long kakaoUserId = oauthClientApi.safeUnlink(kakaoAccessToken);
 
-            if (kakaoUserId == null) {
-                throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
-            }
+        Member member = (kakaoUserId != null)
+                ? memberRepository.findByKakaoUserId(kakaoUserId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER))
+                : getMemberFromToken(kakaoAccessToken);
 
-            Member member = memberRepository.findByKakaoUserId(kakaoUserId)
-                    .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
-
-            tokenService.delete(member.getId());
-            memberRepository.delete(member);
-
-        } catch (FeignException.Unauthorized e) {
-            throw new BusinessException(BusinessErrorCode.INVALID_KAKAO_TOKEN);
-        } catch (FeignException e) {
-            throw new BusinessException(BusinessErrorCode.KAKAO_CLIENT_ERROR);
-        }
+        tokenService.delete(member.getId());
+        memberRepository.delete(member);
     }
 
+    private Member getMemberFromToken(String kakaoAccessToken) {
+        Long userId = jwtTokenGenerator.extractUserId(kakaoAccessToken);
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
+    }
 }
