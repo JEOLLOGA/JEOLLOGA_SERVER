@@ -28,10 +28,15 @@ public class SearchService {
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
 
         searchRepository.deleteByMemberAndContent(member, keyword);
+
         searchRepository.save(new Search(member, keyword));
 
-        searchRepository.deleteOldSearchesBeyondLimit(member, 10);
+        List<Long> keepIds = searchRepository.findTop10IdsByMemberOrderByIdDesc(member);
+        if (!keepIds.isEmpty()) {
+            searchRepository.deleteByMemberAndIdNotIn(member, keepIds);
+        }
     }
+
 
     @Transactional(readOnly = true)
     public SearchListRes getSearch(Long userId) {

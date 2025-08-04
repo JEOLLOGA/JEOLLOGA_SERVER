@@ -21,10 +21,7 @@ public class JwtCookieProvider {
 
     public String extractAccessToken(HttpServletRequest request) {
         String token = extractCookie(request, ACCESS_TOKEN_NAME);
-        if (token == null || token.isBlank()) {
-            throw new JwtAuthenticationException("Access Token 누락");
-        }
-        return token;
+        return (token == null || token.isBlank()) ? null : token;
     }
 
     public String extractRefreshToken(HttpServletRequest request) {

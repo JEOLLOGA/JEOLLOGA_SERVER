@@ -1,9 +1,12 @@
 package sopt.jeolloga.domain.templestay.core;
 
 import com.querydsl.core.Tuple;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import sopt.jeolloga.common.filter.*;
 import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.image.core.ImageRepository;
@@ -92,7 +95,11 @@ public class TemplestayService {
         max = (max == null) ? null : ((max + 9999) / 10000) * 10000;
 
         if (user != null && search != null && !search.isBlank()) {
-            searchService.saveSearch(user.getUserId(), search);
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            String uri = request.getRequestURI();
+            if (uri != null && uri.startsWith("/api/templestay")) {
+                searchService.saveSearch(user.getUserId(), search);
+            }
         }
 
         int offset = (Math.max(page, 1) - 1) * size;

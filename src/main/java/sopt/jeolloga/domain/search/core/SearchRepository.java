@@ -19,19 +19,13 @@ public interface SearchRepository extends JpaRepository<Search, Long> {
 
     List<Search> findTop10ByMember_IdOrderByIdDesc(Long memberId);
 
+    @Query("SELECT s.id FROM Search s WHERE s.member = :member ORDER BY s.id DESC LIMIT 10")
+    List<Long> findTop10IdsByMemberOrderByIdDesc(@Param("member") Member member);
+
     @Transactional
     @Modifying
-    @Query("""
-        DELETE FROM Search s
-        WHERE s.member = :member
-        AND s.id NOT IN (
-            SELECT s2.id FROM Search s2
-            WHERE s2.member = :member
-            ORDER BY s2.id DESC
-            LIMIT :limit
-        )
-    """)
-    void deleteOldSearchesBeyondLimit(@Param("member") Member member, @Param("limit") int limit);
+    @Query("DELETE FROM Search s WHERE s.member = :member AND s.id NOT IN :keepIds")
+    void deleteByMemberAndIdNotIn(@Param("member") Member member, @Param("keepIds") List<Long> keepIds);
 
     Optional<Search> findByIdAndMember_Id(Long id, Long memberId);
 
