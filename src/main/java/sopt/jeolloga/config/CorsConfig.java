@@ -21,7 +21,6 @@ class CorsConfig {
                 "https://3.37.231.47",
                 "https://dev-gototemplestay.vercel.app",
                 "https://gototemplestay.com",
-                "https://www.gototemplestay.com",
                 "https://api.gototemplestay.com"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

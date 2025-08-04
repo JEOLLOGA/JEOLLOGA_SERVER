@@ -58,12 +58,12 @@ public class JwtCookieProvider {
         );
     }
 
-    //http로 개발 및 테스트 중일땨는 secure false로 추후 메인배포에서는 true값으로 변경
     private ResponseCookie createCookie(String name, String value, long maxAge, HttpServletRequest request) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
+                .domain("gototemplestay.com")
                 .path("/")
                 .maxAge(maxAge)
                 .build();
@@ -74,6 +74,7 @@ public class JwtCookieProvider {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
+                .domain("gototemplestay.com")
                 .path("/")
                 .maxAge(0)
                 .build();
