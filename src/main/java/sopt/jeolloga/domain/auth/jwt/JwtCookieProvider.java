@@ -60,7 +60,6 @@ public class JwtCookieProvider {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
-                .domain("gototemplestay.com")
                 .path("/")
                 .maxAge(maxAge)
                 .build();
@@ -71,7 +70,6 @@ public class JwtCookieProvider {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
-                .domain("gototemplestay.com")
                 .path("/")
                 .maxAge(0)
                 .build();
