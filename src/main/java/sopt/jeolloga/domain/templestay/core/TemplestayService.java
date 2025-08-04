@@ -88,6 +88,9 @@ public class TemplestayService {
         int activityMask = FilterMaskUtil.combineMasks(activity);
         int etcMask = FilterMaskUtil.combineMasks(etc);
 
+        min = (min == null) ? null : (min / 10000) * 10000;
+        max = (max == null) ? null : ((max + 9999) / 10000) * 10000;
+
         if (user != null && search != null && !search.isBlank()) {
             searchService.saveSearch(user.getUserId(), search);
         }
