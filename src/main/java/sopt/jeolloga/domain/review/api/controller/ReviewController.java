@@ -20,12 +20,12 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.saveTempleReviews(page));
     }
 
-    @GetMapping("/reviews")
+    @GetMapping("/{id}/reviews")
     public ResponseEntity<ApiResponse<?>> getReviews(
-            @RequestParam Long templestayId,
+            @PathVariable Long id,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int pageSize
     ) {
-        return ResponseEntity.ok(ApiResponse.success(reviewService.getReviews(templestayId, page, pageSize)));
+        return ResponseEntity.ok(ApiResponse.success(reviewService.getReviews(id, page, pageSize)));
     }
 }
