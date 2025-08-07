@@ -26,7 +26,7 @@ public class WishlistCustomRepositoryImpl implements WishlistCustomRepository {
             SELECT 
                 t.id AS templestayId,
                 t.temple_name AS templeName,
-                t.organized_name AS templestayName,
+                t.templestay_name AS templestayName,
                 f.region,
                 f.type,
                 i.img_url,

@@ -26,7 +26,7 @@ public class TemplestayRecommendMapper {
 
     public Optional<TemplestayRecommendRes> toRecommendRes(Long id, int rank, Long userId) {
         return templestayRepository.findById(id)
-                .filter(t -> t.getOrganizedName() != null)
+                .filter(t -> t.getTemplestayName() != null)
                 .flatMap(templestay -> {
                     Filter filter = filterRepository.findFirstByTemplestay_Id(id)
                             .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_FILTER));
@@ -45,7 +45,7 @@ public class TemplestayRecommendMapper {
                     return Optional.of(new TemplestayRecommendRes(
                             templestay.getId(),
                             rank,
-                            templestay.getOrganizedName(),
+                            templestay.getTemplestayName(),
                             imgUrl,
                             region,
                             templestay.getTempleName(),

@@ -24,9 +24,6 @@ public class Templestay {
     private String templestayName;
 
     @Column
-    private String organizedName;
-
-    @Column
     private String phone;
 
     @Column
@@ -63,10 +60,9 @@ public class Templestay {
 
     }
 
-    public Templestay(String url, String templestayName, String organizedName, String phone, String introduction, String address, String templeName, String schedule, LocalDateTime updatedAt, Long view, Double lat, Double lon, List<Filter> filter, List<Image> images) {
+    public Templestay(String url, String templestayName, String phone, String introduction, String address, String templeName, String schedule, LocalDateTime updatedAt, Long view, Double lat, Double lon, List<Filter> filter, List<Image> images) {
         this.url = url;
         this.templestayName = templestayName;
-        this.organizedName = organizedName;
         this.phone = phone;
         this.introduction = introduction;
         this.address = address;

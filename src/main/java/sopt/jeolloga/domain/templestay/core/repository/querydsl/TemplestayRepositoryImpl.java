@@ -52,7 +52,7 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         SELECT 
             t.id AS templestayId,
             t.temple_name AS templeName,
-            t.organized_name AS templestayName,
+            t.templestay_name AS templestayName,
             f.region,
             f.type,
             COALESCE(w.wish_count, 0) AS wishCount
@@ -63,7 +63,7 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
             FROM wishlist
             GROUP BY templestay_id
         ) w ON w.templestay_id = t.id
-        WHERE t.organized_name IS NOT NULL
+        WHERE t.templestay_name IS NOT NULL
           AND (:regionMask = 0 OR (f.region & :regionMask) != 0)
           AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
           AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)
@@ -107,7 +107,7 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         SELECT COUNT(*)
         FROM templestay t
         JOIN filter f ON f.templestay_id = t.id
-        WHERE t.organized_name IS NOT NULL
+        WHERE t.templestay_name IS NOT NULL
           AND (:regionMask = 0 OR (f.region & :regionMask) != 0)
           AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
           AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)

@@ -18,7 +18,7 @@ public class TemplestayDetailsMapper {
 
         return Optional.of(new TemplestayDetailsRes(
                 templestay.getId(),
-                templestay.getOrganizedName(),
+                templestay.getTemplestayName(),
                 templestay.getTempleName(),
                 templestay.getAddress(),
                 templestay.getPhone(),
