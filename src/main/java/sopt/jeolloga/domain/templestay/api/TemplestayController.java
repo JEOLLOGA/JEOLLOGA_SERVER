@@ -34,22 +34,41 @@ public class TemplestayController {
     }
 
     @GetMapping("/recommendation")
-    public ResponseEntity<ApiResponse<?>> getRecommendTemplestay(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        Long userId = (userDetails != null) ? userDetails.getUserId() : null;
+    public ResponseEntity<ApiResponse<?>> getRecommendTemplestay(HttpServletRequest request) {
+        Long userId = null;
+        try {
+            String token = jwtCookieProvider.extractAccessToken(request);
+            if (token != null && !token.isBlank()) {
+                userId = jwtTokenGenerator.extractUserId(token);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         TemplestayRecommendListRes response = templestayService.getRecommendTemplestays(userId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+
     @GetMapping("/details/{id}")
     public ResponseEntity<ApiResponse<?>> getDetailsTemplestay(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long id) {
-        Long userId = (userDetails != null) ? userDetails.getUserId() : null;
+            HttpServletRequest request,
+            @PathVariable Long id
+    ) {
+        Long userId = null;
+        try {
+            String token = jwtCookieProvider.extractAccessToken(request);
+            if (token != null && !token.isBlank()) {
+                userId = jwtTokenGenerator.extractUserId(token);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         TemplestayDetailsRes templestayDetailsRes = templestayService.getDetailsTemplestay(id, userId);
         return ResponseEntity.ok(ApiResponse.success(templestayDetailsRes));
     }
+
 
     @PostMapping("/view/{id}")
     public ResponseEntity<ApiResponse<?>> updateView(@PathVariable Long id) {
