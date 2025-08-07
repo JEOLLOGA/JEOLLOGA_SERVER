@@ -5,7 +5,8 @@ public record LoginResult(
         String refreshToken,
         String kakaoAccessToken,
         Long userId,
-        String nickname
+        String nickname,
+        boolean userInfo
 ) {
 
 }

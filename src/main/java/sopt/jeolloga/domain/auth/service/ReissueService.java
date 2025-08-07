@@ -36,12 +36,17 @@ public class ReissueService {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
 
+        boolean hasUserInfo = member.getAgeRange() != null
+                && member.getGender() != null
+                && member.getReligion() != null;
+
         return new LoginResult(
                 newAccess,
                 newRefresh,
                 null,
                 member.getId(),
-                member.getNickname()
+                member.getNickname(),
+                hasUserInfo
         );
     }
 }

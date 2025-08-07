@@ -51,12 +51,17 @@ public class LoginService {
 
         tokenService.save(member.getId(), refreshToken);
 
+        boolean hasUserInfo = member.getAgeRange() != null
+                && member.getGender() != null
+                && member.getReligion() != null;
+
         return new LoginResult(
                 accessToken,
                 refreshToken,
                 token.accessToken(),
                 member.getId(),
-                member.getNickname());
+                member.getNickname(),
+                hasUserInfo);
     }
 
     @Transactional
