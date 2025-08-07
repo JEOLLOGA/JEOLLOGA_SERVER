@@ -10,6 +10,9 @@ import sopt.jeolloga.domain.wishlist.api.dto.WishlistRes;
 
 import java.util.List;
 
+import static sopt.jeolloga.common.filter.Region.getSingleRegionLabel;
+import static sopt.jeolloga.common.filter.Type.getSingleTypeLabel;
+
 @Repository
 @RequiredArgsConstructor
 public class WishlistCustomRepositoryImpl implements WishlistCustomRepository {
@@ -55,8 +58,8 @@ public class WishlistCustomRepositoryImpl implements WishlistCustomRepository {
                         ((Number) row[0]).longValue(),
                         (String) row[1],
                         (String) row[2],
-                        (String) row[3],
-                        (String) row[4],
+                        getSingleRegionLabel(((Number) row[3]).intValue()),
+                        getSingleTypeLabel(((Number) row[4]).intValue()),
                         (String) row[5],
                         true
                 )

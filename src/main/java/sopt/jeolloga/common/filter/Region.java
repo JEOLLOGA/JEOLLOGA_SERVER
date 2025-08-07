@@ -42,4 +42,12 @@ public enum Region implements BitMask {
                 .filter(region -> (region.getMask() & mask) != 0)
                 .collect(Collectors.toList());
     }
+
+    public static String getSingleRegionLabel(int bitmask) {
+        return Arrays.stream(Region.values())
+                .filter(r -> r.getBit() == bitmask)
+                .findFirst()
+                .map(Region::getLabel)
+                .orElse("UNKNOWN");
+    }
 }
