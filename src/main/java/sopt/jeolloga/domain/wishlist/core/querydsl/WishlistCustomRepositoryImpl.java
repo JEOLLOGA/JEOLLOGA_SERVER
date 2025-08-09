@@ -58,8 +58,8 @@ public class WishlistCustomRepositoryImpl implements WishlistCustomRepository {
                         ((Number) row[0]).longValue(),
                         (String) row[1],
                         (String) row[2],
-                        getSingleRegionLabel(((Number) row[3]).intValue()),
-                        getSingleTypeLabel(((Number) row[4]).intValue()),
+                        row[3] != null ? getSingleRegionLabel(((Number) row[3]).intValue()) : "UNKNOWN",
+                        row[4] != null ? getSingleTypeLabel(((Number) row[4]).intValue())   : "UNKNOWN",
                         (String) row[5],
                         true
                 )

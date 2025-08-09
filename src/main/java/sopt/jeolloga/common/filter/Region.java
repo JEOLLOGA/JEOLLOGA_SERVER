@@ -43,11 +43,21 @@ public enum Region implements BitMask {
                 .collect(Collectors.toList());
     }
 
-    public static String getSingleRegionLabel(int bitmask) {
+    public static String getSingleRegionLabel(int raw) {
+        int idx = toBitIndex(raw);
+        if (idx <= 0) {
+            return "UNKNOWN";
+        }
+
         return Arrays.stream(Region.values())
-                .filter(r -> r.getBit() == bitmask)
+                .filter(r -> r.getBit() == idx)
                 .findFirst()
                 .map(Region::getLabel)
                 .orElse("UNKNOWN");
+    }
+
+    private static int toBitIndex(int raw) {
+        if (raw <= 0) return -1;
+        return ( (raw & (raw - 1)) == 0 ) ? Integer.numberOfTrailingZeros(raw) : raw;
     }
 }
