@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.RedisHash;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash(value = "refreshToken", timeToLive = 1209600)
+@RedisHash(value = "refreshToken", timeToLive = 604800000)
 public class RefreshToken {
 
     @Id

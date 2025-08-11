@@ -21,6 +21,7 @@ class CorsConfig {
                 "http://localhost:3000",
                 "https://3.37.231.47",
                 "https://dev-gototemplestay.vercel.app",
+                "https://www.gototemplestay.com",
                 "https://gototemplestay.com",
                 "https://api.gototemplestay.com"
         ));
