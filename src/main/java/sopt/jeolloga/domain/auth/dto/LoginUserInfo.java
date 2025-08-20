@@ -1,3 +1,9 @@
 package sopt.jeolloga.domain.auth.dto;
 
-public record LoginUserInfo(Long userId, String nickname) {}
+public record LoginUserInfo(
+        Long userId,
+        String nickname,
+        boolean userInfo
+) {
+
+}

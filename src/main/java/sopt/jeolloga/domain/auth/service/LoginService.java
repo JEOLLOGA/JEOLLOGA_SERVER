@@ -61,7 +61,8 @@ public class LoginService {
                 token.accessToken(),
                 member.getId(),
                 member.getNickname(),
-                hasUserInfo);
+                hasUserInfo
+        );
     }
 
     @Transactional
