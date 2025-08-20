@@ -8,7 +8,7 @@ public record MemberOnboardingRes(
         String ageRange,
         String gender,
         String religion,
-        boolean hasExperience
+        String hasExperience
 ) {
     public static MemberOnboardingRes from(Member member) {
         return new MemberOnboardingRes(
@@ -17,7 +17,7 @@ public record MemberOnboardingRes(
                 member.getAgeRange(),
                 member.getGender(),
                 member.getReligion(),
-                member.isHasExperience()
+                member.getHasExperience()
         );
     }
 }

@@ -32,13 +32,13 @@ public class Member {
     private String religion;
 
     @Column
-    private boolean hasExperience;
+    private String hasExperience;
 
     protected Member() {
 
     }
 
-    public Member(String nickname, String email, String ageRange, String gender, String religion, boolean hasExperience) {
+    public Member(String nickname, String email, String ageRange, String gender, String religion, String hasExperience) {
         this.nickname = nickname;
         this.email = email;
         this.ageRange = ageRange;
@@ -53,7 +53,7 @@ public class Member {
         this.nickname = nickname;
     }
 
-    public void onboard(String ageRange, String gender, String religion, boolean hasExperience) {
+    public void onboard(String ageRange, String gender, String religion, String hasExperience) {
         this.ageRange = ageRange;
         this.gender = gender;
         this.religion = religion;
