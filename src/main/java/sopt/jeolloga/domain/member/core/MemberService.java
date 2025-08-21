@@ -1,6 +1,7 @@
 package sopt.jeolloga.domain.member.core;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sopt.jeolloga.domain.member.Member;
 import sopt.jeolloga.domain.member.api.dto.req.MemberOnboardingReq;
 import sopt.jeolloga.domain.member.api.dto.res.MemberOnboardingRes;
@@ -17,6 +18,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public void createOnboarding(Long userId, MemberOnboardingReq memberOnboardingReq) {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));

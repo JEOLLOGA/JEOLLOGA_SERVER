@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record MemberOnboardingReq(
+        Long userId,
         @NotBlank(message = "나이대는 필수입니다.") String ageRange,
         @NotBlank(message = "성별은 필수입니다.") String gender,
         @NotBlank(message = "종교 정보는 필수입니다.") String religion,
