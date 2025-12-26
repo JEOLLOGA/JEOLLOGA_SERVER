@@ -254,9 +254,15 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
               f.region                               AS regionMask,
               f.type                                 AS typeMask,
               t.templestay_name                      AS templestayName,
-              t.temple_name                          AS templeName
+              t.temple_name                          AS templeName,
+              i.img_url                              AS imgUrl
             FROM templestay t
             JOIN filter f ON f.templestay_id = t.id
+            LEFT JOIN (
+                SELECT templestay_id, MIN(img_url) AS img_url
+                FROM image
+                GROUP BY templestay_id
+            ) i ON i.templestay_id = t.id
             WHERE (f.type & :typeMask) <> 0
               AND (:minPrice IS NULL OR f.price >= :minPrice)
               AND (:maxPrice IS NULL OR f.price <= :maxPrice)
@@ -270,7 +276,7 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
               BIT_COUNT(f.activity & :activityMask) DESC,
               f.price ASC
             LIMIT :limit
-            """;
+        """;
 
         Query q = em.createNativeQuery(sql)
                 .setParameter("typeMask", typeMask)
@@ -288,7 +294,8 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
                         maskToLabels(((Number) r[1]).intValue(), Region.values()),
                         maskToLabels(((Number) r[2]).intValue(), Type.values()),
                         (String) r[3],
-                        (String) r[4]
+                        (String) r[4],
+                        (String) r[5]
                 ))
                 .collect(Collectors.toList());
     }
@@ -301,13 +308,19 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
               f.region          AS regionMask,
               f.type            AS typeMask,
               t.templestay_name AS templestayName,
-              t.temple_name     AS templeName
+              t.temple_name     AS templeName,
+              i.img_url         AS imgUrl
             FROM templestay t
             JOIN filter f ON f.templestay_id = t.id
+            LEFT JOIN (
+                SELECT templestay_id, MIN(img_url) AS img_url
+                FROM image
+                GROUP BY templestay_id
+            ) i ON i.templestay_id = t.id
             WHERE (f.type & :typeMask) <> 0
             ORDER BY RAND()
             LIMIT :limit
-            """;
+        """;
 
         Query q = em.createNativeQuery(sql)
                 .setParameter("typeMask", typeMask)
@@ -322,7 +335,8 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
                         maskToLabels(((Number) r[1]).intValue(), Region.values()),
                         maskToLabels(((Number) r[2]).intValue(), Type.values()),
                         (String) r[3],
-                        (String) r[4]
+                        (String) r[4],
+                        (String) r[5]
                 ))
                 .collect(Collectors.toList());
     }

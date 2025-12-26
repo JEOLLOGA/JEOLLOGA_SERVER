@@ -47,9 +47,7 @@ public class SecurityConfig {
 
                                 "/api/templestay/**",
 
-                                "/v2/api/templestay/**",
-
-                                "/v3/api/**"
+                                "/v2/api/templestay/**"
                         ).permitAll()
                         .requestMatchers("/user/**", "/v2/user/**").authenticated()
                         .anyRequest().authenticated()

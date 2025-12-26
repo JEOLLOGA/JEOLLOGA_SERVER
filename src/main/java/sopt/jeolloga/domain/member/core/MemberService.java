@@ -6,11 +6,10 @@ import sopt.jeolloga.common.type.MemberType;
 import sopt.jeolloga.domain.member.Member;
 import sopt.jeolloga.domain.member.api.dto.req.MemberOnboardingReq;
 import sopt.jeolloga.domain.member.api.dto.res.MemberOnboardingRes;
-import sopt.jeolloga.domain.member.api.dto.res.MemberTypeRes;
-import sopt.jeolloga.domain.member.core.MemberRepository;
+import sopt.jeolloga.domain.member.api.dto.res.MemberTypeResultRes;
+import sopt.jeolloga.domain.member.api.dto.res.TypeResultRes;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
-import sopt.jeolloga.exception.ErrorCode;
 
 @Service
 public class MemberService {
@@ -39,17 +38,19 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberTypeRes setType(Long userId, String typeCode) {
+    public MemberTypeResultRes setType(Long userId, MemberType type) {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
 
-        MemberType type = parseTypeOrThrow(typeCode);
-        member.updateType(type);
+        if (type == null) {
+            throw new BusinessException(BusinessErrorCode.INVALID_REQUEST);
+        }
 
+        member.updateType(type);
         return toTypeRes(member, type);
     }
 
-    public MemberTypeRes getType(Long userId) {
+    public MemberTypeResultRes getType(Long userId) {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
 
@@ -68,8 +69,8 @@ public class MemberService {
         }
     }
 
-    private MemberTypeRes toTypeRes(Member member, MemberType type) {
-        return new MemberTypeRes(
+    private MemberTypeResultRes toTypeRes(Member member, MemberType type) {
+        return new MemberTypeResultRes(
                 member.getId(),
                 type.name(),
                 type.getTagline(),
