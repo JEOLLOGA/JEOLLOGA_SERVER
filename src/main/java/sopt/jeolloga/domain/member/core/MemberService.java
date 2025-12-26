@@ -80,4 +80,12 @@ public class MemberService {
                 type.getWorstMate()
         );
     }
+
+    public MemberType findTypeOrNull(Long userId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
+
+        return member.getType();
+    }
+
 }

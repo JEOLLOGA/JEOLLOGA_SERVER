@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/login",
+                                "/auth/login/new",
                                 "/auth/reissue",
                                 "/user/auth/logout",
                                 "/user/auth/unlink",

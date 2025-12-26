@@ -7,13 +7,16 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
+import sopt.jeolloga.common.type.MemberType;
 import sopt.jeolloga.domain.auth.dto.LoginCommand;
 import sopt.jeolloga.domain.auth.dto.LoginResult;
 import sopt.jeolloga.domain.auth.dto.LoginUserInfo;
+import sopt.jeolloga.domain.auth.dto.LoginUserInfoNew;
 import sopt.jeolloga.domain.auth.jwt.JwtCookieProvider;
 import sopt.jeolloga.domain.auth.service.LoginService;
 import sopt.jeolloga.domain.auth.service.LogoutService;
 import sopt.jeolloga.domain.auth.service.ReissueService;
+import sopt.jeolloga.domain.member.core.MemberService;
 
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class OAuthController {
     private final LogoutService logoutService;
     private final ReissueService reissueService;
     private final JwtCookieProvider jwtCookieProvider;
+    private final MemberService memberService;
 
     @GetMapping("/auth/login")
     public ResponseEntity<ApiResponse<?>> login(@RequestParam String code, HttpServletRequest request) {
@@ -34,6 +38,31 @@ public class OAuthController {
 
         return withCookies(cookies).body(ApiResponse.success(userInfo));
     }
+
+    @GetMapping("/auth/login/new")
+    public ResponseEntity<ApiResponse<?>> loginNew(
+            @RequestParam String code,
+            HttpServletRequest request
+    ) {
+        LoginResult result = loginService.login(new LoginCommand(code), request);
+        List<ResponseCookie> cookies = jwtCookieProvider.createAllCookies(result, request);
+
+        MemberType type = memberService.findTypeOrNull(result.userId());
+        boolean hasType = (type != null);
+
+        boolean userInfo = toBooleanUserInfo(result.userInfo());
+
+        LoginUserInfoNew userInfoNew = new LoginUserInfoNew(
+                result.userId(),
+                result.nickname(),
+                userInfo,
+                hasType,
+                type
+        );
+
+        return withCookies(cookies).body(ApiResponse.success(userInfoNew));
+    }
+
 
     @PostMapping("/auth/reissue")
     public ResponseEntity<ApiResponse<?>> reissue(HttpServletRequest request) {
@@ -67,5 +96,9 @@ public class OAuthController {
 
     private ResponseEntity<ApiResponse<?>> okWithCookies(String message, List<ResponseCookie> cookies) {
         return withCookies(cookies).body(ApiResponse.success(message));
+    }
+
+    private boolean toBooleanUserInfo(Object userInfo) {
+        return userInfo != null;
     }
 }
