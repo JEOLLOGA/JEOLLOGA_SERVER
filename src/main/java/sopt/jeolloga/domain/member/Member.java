@@ -1,7 +1,9 @@
 package sopt.jeolloga.domain.member;
 
 import jakarta.persistence.*;
+import lombok.Cleanup;
 import lombok.Getter;
+import sopt.jeolloga.common.type.MemberType;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
 
@@ -34,6 +36,10 @@ public class Member {
     @Column
     private String hasExperience;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private MemberType type;
+
     protected Member() {
 
     }
@@ -58,5 +64,9 @@ public class Member {
         this.gender = gender;
         this.religion = religion;
         this.hasExperience = hasExperience;
+    }
+
+    public void updateType(MemberType type) {
+        this.type = type;
     }
 }

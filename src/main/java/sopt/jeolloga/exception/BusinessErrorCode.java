@@ -8,6 +8,8 @@ public enum BusinessErrorCode {
     // 400 BAD REQUEST
     API_CALL_FAILED(HttpStatus.BAD_REQUEST, "잘못된 API 블로그 리뷰 호출입니다."),
     BAD_REQUEST_ENUM(HttpStatus.BAD_REQUEST, "잘못된 enum값입니다."),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+
     // 401 Unauthorized
     KAKAO_CLIENT_ERROR(HttpStatus.UNAUTHORIZED, "유효하지 않은 Kakao 토큰입니다."),
     KAKAO_UNAUTHORIZED_REFRESHTOKEN(HttpStatus.UNAUTHORIZED, "RefreshToken 검증 실패"),
