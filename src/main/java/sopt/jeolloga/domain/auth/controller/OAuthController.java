@@ -39,7 +39,7 @@ public class OAuthController {
         return withCookies(cookies).body(ApiResponse.success(userInfo));
     }
 
-    @GetMapping("/auth/login/new")
+/*    @GetMapping("/auth/login/new")
     public ResponseEntity<ApiResponse<?>> loginNew(
             @RequestParam String code,
             HttpServletRequest request
@@ -61,8 +61,7 @@ public class OAuthController {
         );
 
         return withCookies(cookies).body(ApiResponse.success(userInfoNew));
-    }
-
+    }*/
 
     @PostMapping("/auth/reissue")
     public ResponseEntity<ApiResponse<?>> reissue(HttpServletRequest request) {
