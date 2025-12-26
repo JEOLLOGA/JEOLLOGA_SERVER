@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
 import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.member.api.dto.req.MemberOnboardingReq;
+import sopt.jeolloga.domain.member.api.dto.req.MemberTypeReq;
 import sopt.jeolloga.domain.member.api.dto.res.MemberOnboardingRes;
+import sopt.jeolloga.domain.member.api.dto.res.MemberTypeRes;
 import sopt.jeolloga.domain.member.core.MemberService;
 import jakarta.validation.Valid;
 
@@ -34,5 +36,22 @@ public class MemberController {
             ) {
         MemberOnboardingRes memberOnboardingRes = memberService.getMemberInfo(userDetails.getUserId());
         return ResponseEntity.ok(ApiResponse.success(memberOnboardingRes));
+    }
+
+    @PatchMapping("/type")
+    public ResponseEntity<ApiResponse<?>> setType(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody MemberTypeReq req
+    ) {
+        MemberTypeRes res = memberService.setType(userDetails.getUserId(), req.type());
+        return ResponseEntity.ok(ApiResponse.success(res));
+    }
+
+    @GetMapping("/type")
+    public ResponseEntity<ApiResponse<?>> getType(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        MemberTypeRes res = memberService.getType(userDetails.getUserId());
+        return ResponseEntity.ok(ApiResponse.success(res));
     }
 }
