@@ -5,5 +5,6 @@ public record TemplestayPickRes(
         String region,
         String type,
         String templestayName,
-        String templeName
+        String templeName,
+        String imgUrl
 ) {}

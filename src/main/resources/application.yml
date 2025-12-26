@@ -5,3 +5,7 @@ spring:
 logging:
   level:
     root: info
+
+guest:
+  type:
+    ttl-seconds: 86400 

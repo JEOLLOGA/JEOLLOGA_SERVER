@@ -4,11 +4,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
+import sopt.jeolloga.common.type.MemberType;
 import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.member.api.dto.req.MemberOnboardingReq;
 import sopt.jeolloga.domain.member.api.dto.req.MemberTypeReq;
 import sopt.jeolloga.domain.member.api.dto.res.MemberOnboardingRes;
-import sopt.jeolloga.domain.member.api.dto.res.MemberTypeRes;
+import sopt.jeolloga.domain.member.api.dto.res.MemberTypeResultRes;
+import sopt.jeolloga.domain.member.api.dto.res.TypeResultRes;
 import sopt.jeolloga.domain.member.core.MemberService;
 import jakarta.validation.Valid;
 
@@ -41,17 +43,20 @@ public class MemberController {
     @PatchMapping("/type")
     public ResponseEntity<ApiResponse<?>> setType(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody MemberTypeReq req
+            @RequestBody MemberType type
     ) {
-        MemberTypeRes res = memberService.setType(userDetails.getUserId(), req.type());
+        MemberTypeResultRes res =
+                memberService.setType(userDetails.getUserId(), type);
+
         return ResponseEntity.ok(ApiResponse.success(res));
     }
+
 
     @GetMapping("/type")
     public ResponseEntity<ApiResponse<?>> getType(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        MemberTypeRes res = memberService.getType(userDetails.getUserId());
+        MemberTypeResultRes res = memberService.getType(userDetails.getUserId());
         return ResponseEntity.ok(ApiResponse.success(res));
     }
 }

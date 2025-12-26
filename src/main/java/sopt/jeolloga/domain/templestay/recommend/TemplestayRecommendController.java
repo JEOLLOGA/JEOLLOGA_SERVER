@@ -8,7 +8,6 @@ import sopt.jeolloga.common.dto.ApiResponse;
 import sopt.jeolloga.common.type.MemberType;
 
 @RestController
-@RequestMapping("/v3")
 @RequiredArgsConstructor
 public class TemplestayRecommendController {
 
@@ -23,8 +22,7 @@ public class TemplestayRecommendController {
         return ResponseEntity.ok(ApiResponse.success(data));
     }
 
-    // Controller
-    @GetMapping("/api/recommend/type")
+    @GetMapping("/api/templestay/type-random")
     public ResponseEntity<ApiResponse<?>> recommendAll(@RequestParam(defaultValue = "20") int limit) {
         List<TemplestayPickRes> results = service.recommendFlat(limit);
         return ResponseEntity.ok(ApiResponse.success(new RecommendFlatRes(results)));
