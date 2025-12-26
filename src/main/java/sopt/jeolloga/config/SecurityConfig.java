@@ -36,19 +36,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/login",
-/*
                                 "/auth/login/new",
-*/
                                 "/auth/reissue",
                                 "/user/auth/logout",
                                 "/user/auth/unlink",
+                                "/api/templestay/**",
 
                                 "/v2/auth/login",
                                 "/v2/auth/reissue",
                                 "/v2/user/auth/logout",
                                 "/v2/user/auth/unlink",
-
-                                "/api/templestay/**",
+                                "/v2/auth/login/new",
+                                "/v2/api/templestay/**",
 
                                 "/v2/api/templestay/**"
                         ).permitAll()
