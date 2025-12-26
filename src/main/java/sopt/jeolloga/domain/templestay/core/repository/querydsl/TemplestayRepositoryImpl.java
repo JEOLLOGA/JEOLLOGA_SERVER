@@ -11,35 +11,42 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import sopt.jeolloga.common.filter.BitMask;
+import sopt.jeolloga.common.filter.Region;
+import sopt.jeolloga.common.filter.Type;
 import sopt.jeolloga.domain.filter.QFilter;
 import sopt.jeolloga.domain.templestay.QTemplestay;
 import sopt.jeolloga.domain.templestay.Templestay;
 import sopt.jeolloga.domain.templestay.api.dto.res.TemplestayDetailsRes;
+import sopt.jeolloga.domain.templestay.recommend.TemplestayPickRes;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-@Repository
 @RequiredArgsConstructor
 public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
     @PersistenceContext
-    private final EntityManager em;
+    private EntityManager em;
 
     @Override
     public List<Object[]> fetchFilteredTemplestays(
-            Integer regionMask, Integer typeMask, Integer activityMask, Integer etcMask,
-            Integer minPrice, Integer maxPrice, String sort, String search,
-            int offset, int limit
+            Integer regionMask,
+            Integer typeMask,
+            Integer activityMask,
+            Integer etcMask,
+            Integer minPrice,
+            Integer maxPrice,
+            String sort,
+            String search,
+            int offset,
+            int limit
     ) {
-        if (sort == null || sort.isBlank()) {
-            sort = "recommend";
-        }
+        if (sort == null || sort.isBlank()) sort = "recommend";
 
         String orderByClause = switch (sort) {
             case "price" -> " ORDER BY f.price ASC, t.id ASC ";
@@ -49,37 +56,37 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         };
 
         String sql = """
-        SELECT 
-            t.id AS templestayId,
-            t.temple_name AS templeName,
-            t.templestay_name AS templestayName,
-            f.region,
-            f.type,
-            COALESCE(w.wish_count, 0) AS wishCount
-        FROM templestay t
-        JOIN filter f ON f.templestay_id = t.id
-        LEFT JOIN (
-            SELECT templestay_id, COUNT(*) AS wish_count
-            FROM wishlist
-            GROUP BY templestay_id
-        ) w ON w.templestay_id = t.id
-        WHERE t.templestay_name IS NOT NULL
-          AND (:regionMask = 0 OR (f.region & :regionMask) != 0)
-          AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
-          AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)
-          AND (:etcMask = 0 OR (f.etc & :etcMask) != 0)
-          AND (:minPrice IS NULL OR f.price >= :minPrice)
-          AND (:maxPrice IS NULL OR f.price <= :maxPrice)
-          AND (
-            :search IS NULL OR :search = ''
-            OR (
-                LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
-                OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
+            SELECT 
+                t.id AS templestayId,
+                t.temple_name AS templeName,
+                t.templestay_name AS templestayName,
+                f.region,
+                f.type,
+                COALESCE(w.wish_count, 0) AS wishCount
+            FROM templestay t
+            JOIN filter f ON f.templestay_id = t.id
+            LEFT JOIN (
+                SELECT templestay_id, COUNT(*) AS wish_count
+                FROM wishlist
+                GROUP BY templestay_id
+            ) w ON w.templestay_id = t.id
+            WHERE t.templestay_name IS NOT NULL
+              AND (:regionMask = 0 OR (f.region & :regionMask) != 0)
+              AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
+              AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)
+              AND (:etcMask = 0 OR (f.etc & :etcMask) != 0)
+              AND (:minPrice IS NULL OR f.price >= :minPrice)
+              AND (:maxPrice IS NULL OR f.price <= :maxPrice)
+              AND (
+                :search IS NULL OR :search = ''
+                OR (
+                    LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
+                    OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
+                )
             )
-        )
-        """ + orderByClause + """
-        LIMIT :limit OFFSET :offset
-        """;
+            """ + orderByClause + """
+            LIMIT :limit OFFSET :offset
+            """;
 
         Query nativeQuery = em.createNativeQuery(sql)
                 .setParameter("regionMask", regionMask != null ? regionMask : 0)
@@ -94,34 +101,38 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
-
         return resultList;
     }
 
     @Override
     public long countFilteredTemplestays(
-            Integer regionMask, Integer typeMask, Integer activityMask, Integer etcMask,
-            Integer minPrice, Integer maxPrice, String search
+            Integer regionMask,
+            Integer typeMask,
+            Integer activityMask,
+            Integer etcMask,
+            Integer minPrice,
+            Integer maxPrice,
+            String search
     ) {
         String sql = """
-        SELECT COUNT(*)
-        FROM templestay t
-        JOIN filter f ON f.templestay_id = t.id
-        WHERE t.templestay_name IS NOT NULL
-          AND (:regionMask = 0 OR (f.region & :regionMask) != 0)
-          AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
-          AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)
-          AND (:etcMask = 0 OR (f.etc & :etcMask) != 0)
-          AND (:minPrice IS NULL OR f.price >= :minPrice)
-          AND (:maxPrice IS NULL OR f.price <= :maxPrice)
-          AND (
-            :search IS NULL OR :search = ''
-            OR (
-                LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
-                OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
+            SELECT COUNT(*)
+            FROM templestay t
+            JOIN filter f ON f.templestay_id = t.id
+            WHERE t.templestay_name IS NOT NULL
+              AND (:regionMask = 0 OR (f.region & :regionMask) != 0)
+              AND (:typeMask = 0 OR (f.type & :typeMask) != 0)
+              AND (:activityMask = 0 OR (f.activity & :activityMask) != 0)
+              AND (:etcMask = 0 OR (f.etc & :etcMask) != 0)
+              AND (:minPrice IS NULL OR f.price >= :minPrice)
+              AND (:maxPrice IS NULL OR f.price <= :maxPrice)
+              AND (
+                :search IS NULL OR :search = ''
+                OR (
+                    LOWER(t.templestay_name) LIKE CONCAT('%', LOWER(:search), '%')
+                    OR LOWER(t.temple_name) LIKE CONCAT('%', LOWER(:search), '%')
+                )
             )
-        )
-        """;
+            """;
 
         Query countQuery = em.createNativeQuery(sql)
                 .setParameter("regionMask", regionMask != null ? regionMask : 0)
@@ -142,10 +153,7 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         QFilter f = QFilter.filter;
 
         BooleanBuilder builder = buildFilterConditions(f, regionMask, typeMask, activityMask, etcMask);
-
-        if (!builder.hasValue()) {
-            return Collections.emptyList();
-        }
+        if (!builder.hasValue()) return Collections.emptyList();
 
         return queryFactory.select(t)
                 .from(t)
@@ -160,17 +168,15 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
         QFilter f = QFilter.filter;
 
         BooleanBuilder builder = buildFilterConditions(f, regionMask, typeMask, activityMask, etcMask);
+        if (!builder.hasValue()) return 0L;
 
-        if (!builder.hasValue()) {
-            return 0L;
-        }
-
-        return queryFactory
+        Long cnt = queryFactory
                 .select(t.count())
                 .from(t)
                 .join(t.filter, f)
                 .where(builder)
                 .fetchOne();
+        return (cnt == null) ? 0L : cnt;
     }
 
     @Override
@@ -232,5 +238,111 @@ public class TemplestayRepositoryImpl implements TemplestayCustomRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<TemplestayPickRes> findTopByMasks(
+            int typeMask,
+            int activityMask,
+            Integer minPrice,
+            Integer maxPrice,
+            int limit
+    ) {
+        String sql = """
+            SELECT 
+              t.id                                   AS templestayId,
+              f.region                               AS regionMask,
+              f.type                                 AS typeMask,
+              t.templestay_name                      AS templestayName,
+              t.temple_name                          AS templeName
+            FROM templestay t
+            JOIN filter f ON f.templestay_id = t.id
+            WHERE (f.type & :typeMask) <> 0
+              AND (:minPrice IS NULL OR f.price >= :minPrice)
+              AND (:maxPrice IS NULL OR f.price <= :maxPrice)
+            ORDER BY
+              CASE BIT_COUNT(f.activity & :activityMask)
+                   WHEN 3 THEN 1
+                   WHEN 2 THEN 2
+                   WHEN 1 THEN 3
+                   ELSE 4
+              END ASC,
+              BIT_COUNT(f.activity & :activityMask) DESC,
+              f.price ASC
+            LIMIT :limit
+            """;
+
+        Query q = em.createNativeQuery(sql)
+                .setParameter("typeMask", typeMask)
+                .setParameter("activityMask", activityMask)
+                .setParameter("minPrice", minPrice)
+                .setParameter("maxPrice", maxPrice)
+                .setParameter("limit", limit);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = q.getResultList();
+
+        return rows.stream()
+                .map(r -> new TemplestayPickRes(
+                        ((Number) r[0]).longValue(),
+                        maskToLabels(((Number) r[1]).intValue(), Region.values()),
+                        maskToLabels(((Number) r[2]).intValue(), Type.values()),
+                        (String) r[3],
+                        (String) r[4]
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TemplestayPickRes> findRandomByType(int typeMask, int limit) {
+        String sql = """
+            SELECT 
+              t.id              AS templestayId,
+              f.region          AS regionMask,
+              f.type            AS typeMask,
+              t.templestay_name AS templestayName,
+              t.temple_name     AS templeName
+            FROM templestay t
+            JOIN filter f ON f.templestay_id = t.id
+            WHERE (f.type & :typeMask) <> 0
+            ORDER BY RAND()
+            LIMIT :limit
+            """;
+
+        Query q = em.createNativeQuery(sql)
+                .setParameter("typeMask", typeMask)
+                .setParameter("limit", limit);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = q.getResultList();
+
+        return rows.stream()
+                .map(r -> new TemplestayPickRes(
+                        ((Number) r[0]).longValue(),
+                        maskToLabels(((Number) r[1]).intValue(), Region.values()),
+                        maskToLabels(((Number) r[2]).intValue(), Type.values()),
+                        (String) r[3],
+                        (String) r[4]
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @lombok.Getter
+    @lombok.Setter
+    private static class Row {
+        Long templestayId;
+        Integer regionMask;
+        Integer typeMask;
+        String templestayName;
+        String templeName;
+        Integer hits;
+        Integer rankOrder;
+    }
+
+    private static <E extends Enum<E> & BitMask> String maskToLabels(int mask, E[] values) {
+        return java.util.Arrays.stream(values)
+                .filter(e -> (e.getMask() & mask) != 0)
+                .map(BitMask::getLabel)
+                .collect(Collectors.joining(", "));
     }
 }
