@@ -61,6 +61,16 @@ public class MemberService {
         return toTypeRes(member, type);
     }
 
+    @Transactional
+    public MemberTypeResultRes setTypeByCode(Long userId, String typeCode) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
+
+        MemberType type = parseTypeOrThrow(typeCode);
+        member.updateType(type);
+        return toTypeRes(member, type);
+    }
+
     private MemberType parseTypeOrThrow(String code) {
         try {
             return MemberType.valueOf(code);

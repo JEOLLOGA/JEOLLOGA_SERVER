@@ -35,7 +35,7 @@ public class MemberController {
     @GetMapping("/mypage")
     public ResponseEntity<ApiResponse<?>> getMemberInfo(
             @AuthenticationPrincipal CustomUserDetails userDetails
-            ) {
+    ) {
         MemberOnboardingRes memberOnboardingRes = memberService.getMemberInfo(userDetails.getUserId());
         return ResponseEntity.ok(ApiResponse.success(memberOnboardingRes));
     }
@@ -57,6 +57,15 @@ public class MemberController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         MemberTypeResultRes res = memberService.getType(userDetails.getUserId());
+        return ResponseEntity.ok(ApiResponse.success(res));
+    }
+
+    @PostMapping("/type")
+    public ResponseEntity<ApiResponse<?>> updateType(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody MemberTypeReq memberTypeReq
+    ) {
+        MemberTypeResultRes res = memberService.setTypeByCode(userDetails.getUserId(), memberTypeReq.type());
         return ResponseEntity.ok(ApiResponse.success(res));
     }
 }
