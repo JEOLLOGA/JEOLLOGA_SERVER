@@ -10,6 +10,7 @@ import sopt.jeolloga.domain.member.api.dto.req.MemberOnboardingReq;
 import sopt.jeolloga.domain.member.api.dto.req.MemberTypeReq;
 import sopt.jeolloga.domain.member.api.dto.res.MemberOnboardingRes;
 import sopt.jeolloga.domain.member.api.dto.res.MemberTypeResultRes;
+import sopt.jeolloga.domain.member.api.dto.res.MypageRes;
 import sopt.jeolloga.domain.member.api.dto.res.TypeResultRes;
 import sopt.jeolloga.domain.member.core.MemberService;
 import jakarta.validation.Valid;
@@ -67,5 +68,13 @@ public class MemberController {
     ) {
         MemberTypeResultRes res = memberService.setTypeByCode(userDetails.getUserId(), memberTypeReq.type());
         return ResponseEntity.ok(ApiResponse.success(res));
+    }
+
+    @GetMapping("/new-mypage")
+    public ResponseEntity<ApiResponse<?>> getNewMypageInfo(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        MypageRes mypageRes = memberService.getNewMypageInfo(userDetails.getUserId());
+        return ResponseEntity.ok(ApiResponse.success(mypageRes));
     }
 }
