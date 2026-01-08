@@ -7,6 +7,7 @@ import sopt.jeolloga.domain.member.Member;
 import sopt.jeolloga.domain.member.api.dto.req.MemberOnboardingReq;
 import sopt.jeolloga.domain.member.api.dto.res.MemberOnboardingRes;
 import sopt.jeolloga.domain.member.api.dto.res.MemberTypeResultRes;
+import sopt.jeolloga.domain.member.api.dto.res.MypageRes;
 import sopt.jeolloga.domain.member.api.dto.res.TypeResultRes;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
@@ -71,6 +72,31 @@ public class MemberService {
         return toTypeRes(member, type);
     }
 
+    public MypageRes getNewMypageInfo(Long userId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.NOT_FOUND_USER));
+
+        MemberType type = member.getType();
+
+        if (type == null) {
+            return new MypageRes(
+                    null,
+                    null,
+                    member.getNickname(),
+                    member.getEmail(),
+                    false
+            );
+        }
+
+        return new MypageRes(
+                type.name(),
+                extractTypeContent(type.getTagline()),
+                member.getNickname(),
+                member.getEmail(),
+                true
+        );
+    }
+
     private MemberType parseTypeOrThrow(String code) {
         try {
             return MemberType.valueOf(code);
@@ -98,4 +124,12 @@ public class MemberService {
         return member.getType();
     }
 
+    private String extractTypeContent(String tagline) {
+        if (tagline == null || tagline.isBlank()) return null;
+
+        int commaIdx = tagline.indexOf(",");
+        if (commaIdx < 0) return tagline.trim();
+
+        return tagline.substring(0, commaIdx).trim();
+    }
 }
