@@ -46,6 +46,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.startsWith("/api/") || path.startsWith("/v2/api/") || path.startsWith("/auth/") || path.startsWith("/v2/auth");
+        String method = request.getMethod();
+
+        boolean isTemplestayTypePost =
+                "POST".equalsIgnoreCase(method) && (
+                        "/api/templestay/type".equals(path) ||
+                                "/v2/api/templestay/type".equals(path)
+                );
+
+        if (isTemplestayTypePost) {
+            return false;
+        }
+
+        return path.startsWith("/api/")
+                || path.startsWith("/v2/api/")
+                || path.startsWith("/auth/")
+                || path.startsWith("/v2/auth");
     }
+
 }

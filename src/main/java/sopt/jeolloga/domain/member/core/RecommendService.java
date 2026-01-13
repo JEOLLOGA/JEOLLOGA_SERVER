@@ -1,13 +1,19 @@
 package sopt.jeolloga.domain.member.core;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sopt.jeolloga.common.type.MemberType;
+import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.member.api.dto.res.TypeResultRes;
 import sopt.jeolloga.exception.BusinessErrorCode;
 import sopt.jeolloga.exception.BusinessException;
 
 @Service
+@RequiredArgsConstructor
 public class RecommendService {
+
+    private final MemberService memberService;
 
     public TypeResultRes recommendByType(MemberType type) {
         if (type == null) {
@@ -20,6 +26,23 @@ public class RecommendService {
         String code = computeTypeCodeFromNine(result);
         MemberType type = parseTypeOrThrow(code);
         return toTypeRes(type);
+    }
+
+    @Transactional
+    public void saveTypeIfAuthenticated(CustomUserDetails userDetails, TypeResultRes res) {
+        if (userDetails == null) return;
+
+        String code = (res.code() == null) ? null : res.code().trim();
+        if (code == null || code.isBlank()) return;
+
+        MemberType type;
+        try {
+            type = MemberType.valueOf(code);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+
+        memberService.setType(userDetails.getUserId(), type);
     }
 
     private MemberType parseTypeOrThrow(String code) {

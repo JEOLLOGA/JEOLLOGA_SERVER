@@ -1,10 +1,11 @@
 package sopt.jeolloga.domain.member.api;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sopt.jeolloga.common.dto.ApiResponse;
 import sopt.jeolloga.common.type.MemberType;
+import sopt.jeolloga.domain.auth.jwt.CustomUserDetails;
 import sopt.jeolloga.domain.member.api.dto.req.TestResultReq;
 import sopt.jeolloga.domain.member.api.dto.res.TypeResultRes;
 import sopt.jeolloga.domain.member.core.RecommendService;
@@ -27,10 +28,18 @@ public class RecommendController {
         return ResponseEntity.ok(ApiResponse.success(res));
     }
 
-    @PostMapping(value = "/type", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<?>> getByTestResult(@RequestBody TestResultReq req) {
+    @PostMapping("/type")
+    public ResponseEntity<ApiResponse<?>> getByTestResult(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody TestResultReq req
+    ) {
         TypeResultRes res = recommendService.recommendByTestResult(req.result());
+        recommendService.saveTypeIfAuthenticated(userDetails, res);
+
+        System.out.println("userDetails=" + (userDetails==null ? "null" : userDetails.getUserId()));
+
         return ResponseEntity.ok(ApiResponse.success(res));
     }
+
 }
 
