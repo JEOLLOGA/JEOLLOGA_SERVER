@@ -33,7 +33,7 @@ import static sopt.jeolloga.util.FilterMaskUtil.decodeMask;
 @RequiredArgsConstructor
 public class TemplestayService {
 
-    private static final List<Long> RECOMMEND_TEMPLATESTAY_IDS = List.of(1561L, 1489L, 1458L);
+    private static final List<Long> RECOMMEND_TEMPLATESTAY_IDS = List.of(1561L, 1576L, 1506L);
 
     private final TemplestayRepository templestayRepository;
     private final ImageRepository imageRepository;
